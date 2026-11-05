@@ -47,3 +47,16 @@ observational results support evaluating test design, without guaranteeing
 superiority on new tasks. Mutation scores measure detection of injected code
 changes, so evidence about agent shortcuts must also come from evaluating
 those shortcuts directly.
+
+\subsection{Agent Self-Review and Disclosure}
+
+Language-based assessments require separate validation. Turpin et al. find
+that reasoning explanations can omit influences on model answers, although
+their experiments do not evaluate code self-review~\cite{turpin2023unfaithful}.
+More directly, a METR research report describes task-dependent responses when
+agents are questioned after reward hacking: some acknowledge violating user
+intent, while others defend their behaviour~\cite{vonarx2025rewardhacking}.
+This report is not peer-reviewed, and its examples do not establish general
+self-review accuracy. Together, these findings motivate comparing admissions
+with implementation evidence and distinguishing later acknowledgement from
+disclosure during execution or in the final answer.
