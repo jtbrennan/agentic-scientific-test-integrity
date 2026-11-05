@@ -21,3 +21,29 @@ exploitation but also reduces performance on the original tasks; read-only
 access prevents test edits without eliminating
 special-casing~\cite{zhong2025impossiblebench}. Test access can therefore affect
 both legitimate implementation and opportunities for exploitation.
+
+\subsection{Hidden Oracles and Test Adequacy}
+
+Preventing exploitation and detecting it are different evaluation problems.
+The EvilGenie preprint compares held-out tests, test-edit detection, and LLM
+judges. Its held-out tests miss some heuristic solutions and flag some
+legitimate attempts that mishandle edge cases~\cite{gabor2026evilgenie}.
+This qualifies the role of hidden tests: restricting access may discourage
+shortcuts, but detector accuracy still depends on what the tests exercise.
+
+Barr et al.'s oracle survey distinguishes generating inputs from deciding
+whether outputs are correct~\cite{barr2015oracle}. Metamorphic testing checks
+relations between executions, reducing reliance on known answers. Segura et al.
+show that relation selection affects fault detection~\cite{segura2016survey}.
+For example, constant outputs satisfy row-order invariance; a suitable relation
+requiring an output change can expose that shortcut. The relevant issue is
+which behaviours a relation rules out, rather than how many tests are hidden.
+
+Property-based tests check specified properties over generated inputs.
+Ravi and Coblenz use mutation testing to evaluate property-based tests in 40
+Python projects, finding higher average detection per test than unit tests,
+with variation across property categories~\cite{ravi2025pbt}. Their
+observational results support evaluating test design, without guaranteeing
+superiority on new tasks. Mutation scores measure detection of injected code
+changes, so evidence about agent shortcuts must also come from evaluating
+those shortcuts directly.
