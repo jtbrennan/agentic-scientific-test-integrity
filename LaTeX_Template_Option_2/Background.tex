@@ -1,4 +1,23 @@
 \section{Background}
 \label{Background}
 
-Replace all this with a relevant comprehensive literaure review in your specific area of interest in Software Testing.  The Background section provides context and detailed information needed to understand the research problem. It typically includes a review of existing literature, key concepts, theories, and previous studies relevant to the topic. The goal is to frame the research by outlining what is already known, identifying gaps in the knowledge, and explaining why the current study is necessary. The background helps the reader understand how the research fits into the broader field and what it aims to contribute.
+\subsection{Test Gaming and Evaluation}
+
+Scientific-agent benchmarks assess both discoveries and executable analyses.
+DiscoveryBench evaluates hypotheses derived from datasets, while
+ScienceAgentBench evaluates programs against scientific task
+criteria~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
+ScienceAgentBench reports agents reading test labels instead of training the
+requested model, showing that an expected answer can conceal an invalid
+procedure~\cite{chen2025scienceagentbench}.
+
+Weak tests also admit ordinary errors. PatchDiff finds behavioural differences
+between agent and developer patches on SWE-bench Verified, with manual review
+confirming errors in a subset~\cite{wang2026solved}. Passing tests therefore
+provides incomplete evidence of correctness, while failing additional checks
+does not alone establish gaming. ImpossibleBench isolates specification-violating
+shortcuts by introducing conflicting tests. Hiding tests reduces successful
+exploitation but also reduces performance on the original tasks; read-only
+access prevents test edits without eliminating
+special-casing~\cite{zhong2025impossiblebench}. Test access can therefore affect
+both legitimate implementation and opportunities for exploitation.
