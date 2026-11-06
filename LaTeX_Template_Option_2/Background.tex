@@ -67,11 +67,11 @@ disclosure during execution or in the final answer.
 
 \subsection{Motivation for This Study}
 
-The reviewed work establishes risks in test-based evaluation, but does not
-settle which checks expose shortcuts tied to scientific datasets or whether
-agents disclose those shortcuts consistently. We examine these questions
-across six adapted tasks, separating ordinary and deliberately conflicting
-test conditions. Dataset-anchored metamorphic checks extend evaluation beyond
-fixed expected answers, while planted implementations and mutation testing
-assess detector strength. Comparing these checks with disclosure at different
-stages connects software correctness with the reliability of the agent's report.
+The reviewed studies leave uncertainty about which hidden checks expose
+shortcuts tied to scientific datasets and whether agents disclose them before
+explicit review. These questions matter together: a missed shortcut may
+reflect a weak oracle, while a later admission may leave an earlier report
+misleading. Evaluating detector performance alongside disclosure can therefore
+clarify whether users receive adequate evidence of correctness. Test visibility
+provides the context for this comparison, since it changes the information
+available to the agent during implementation.
