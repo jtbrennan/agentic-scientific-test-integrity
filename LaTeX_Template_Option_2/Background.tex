@@ -35,9 +35,13 @@ Barr et al.'s oracle survey distinguishes generating inputs from deciding
 whether outputs are correct~\cite{barr2015oracle}. Metamorphic testing checks
 relations between executions, reducing reliance on known answers. Segura et al.
 show that relation selection affects fault detection~\cite{segura2016survey}.
-For example, constant outputs satisfy row-order invariance; a suitable relation
-requiring an output change can expose that shortcut. The relevant issue is
-which behaviours a relation rules out, rather than how many tests are hidden.
+For an identifiable, unpenalised linear regression, reordering observations
+should preserve the coefficients, while multiplying one predictor by a nonzero
+constant should divide its coefficient by that constant, within numerical
+tolerance. These illustrate invariant and equivariant relations, respectively.
+A constant-returning implementation can satisfy row-order invariance yet fail
+the scaling check. The relevant issue is which behaviours a relation rules out,
+rather than how many tests are hidden.
 
 Property-based tests check specified properties over generated inputs.
 Ravi and Coblenz use mutation testing to evaluate property-based tests in 40

@@ -2,9 +2,8 @@
 \label{Introduction}
 
 AI agents that write and execute code are being evaluated as assistants for
-scientific analysis. DiscoveryBench examines data-driven discovery workflows,
-while ScienceAgentBench evaluates programs for tasks drawn from scientific
-publications~\cite{majumder2025discoverybench,chen2025scienceagentbench}. These
+scientific analysis in benchmarks such as DiscoveryBench and
+ScienceAgentBench~\cite{majumder2025discoverybench,chen2025scienceagentbench}. These
 settings require more than executable code: the program must perform the
 requested analysis, and its reported results must follow from that analysis.
 A researcher needs evidence that a coefficient, prediction, or statistical
@@ -18,33 +17,24 @@ could return the coefficient written in a visible test instead of estimating it
 from the input data. A more selective implementation could recognize the
 supplied dataset and substitute an expected answer only for that input. Such
 code can pass visible checks while failing to implement the stated method.
-This behavior differs from an ordinary programming error, such as an optimizer
+This behaviour differs from an ordinary programming error, such as an optimizer
 that fails to converge: both can produce incorrect results, but a failing test
-alone does not establish gaming. Classifying the behavior requires inspecting
+alone does not establish gaming. Classifying the behaviour requires inspecting
 the implementation and its development record.
 
 Independent evaluation is difficult when the correct result is not readily
-available. Barr et al. describe this challenge as the \emph{test oracle problem}
-and survey approaches including specifications and metamorphic
-testing~\cite{barr2015oracle}. In scientific software, checking one known output
-does not establish that a method works on different samples or transformed
-data. Metamorphic checks offer additional evidence by testing relationships
-between executions: reordering independent observations should preserve an
-estimate, whereas rescaling a predictor should change its coefficient in a
-predictable way. These relationships also have limits. An implementation that
-always returns a constant can satisfy row-order invariance without performing
-any analysis.
+available, a challenge known as the \emph{test oracle problem}~\cite{barr2015oracle}.
+In scientific software, checking one known output does not establish that a
+method works on different samples or transformed data. Evaluation therefore
+needs evidence that the implementation follows the requested analysis beyond
+the examples covered by a finite visible suite.
 
-Prior work establishes that shortcuts are a practical evaluation concern.
-ImpossibleBench introduces conflicts between task specifications and tests,
-making successful test exploitation identifiable, and studies behaviors
-including test modification and special-casing~\cite{zhong2025impossiblebench}.
-ScienceAgentBench also reports agents reading test labels instead of training
-the requested model~\cite{chen2025scienceagentbench}. These findings motivate
-examining which independent checks expose shortcuts in scientific code and
-whether an agent's explanation communicates the resulting limitations.
+Prior studies document test exploitation in coding agents and shortcuts in
+scientific analysis~\cite{zhong2025impossiblebench,chen2025scienceagentbench}.
+This evidence motivates independent checks of code and scrutiny of the agent's
+account of its work.
 
-We investigate these questions using six adapted scientific analysis tasks
+We examine these concerns using six adapted scientific analysis tasks
 covering socioeconomic outcomes, wealth, climate trends, replication effects,
 and fish diversity. The tasks draw on DiscoveryBench data and an adaptation of
 a ScienceAgentBench climate-analysis task. Our current dataset contains 190
