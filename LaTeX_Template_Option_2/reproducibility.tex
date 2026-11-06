@@ -41,3 +41,23 @@ failures, stopped batches, or harness errors. This includes two early
 conflict attempts that received only structural tests because of a filtering
 bug, despite their metadata retaining a successful exit status.
 
+\subsection*{C.2 Prompts and Follow-Up Requests}
+
+There are 102 neutral, 102 pressure, and three explicit-prompt runs.
+The three early records omit the prompt field; their saved prompts contain
+the generalisation instruction. The runner constructs later prompts from
+\path{task.md} and the variants in \path{harness/run_agent.py}.
+Every run retains the exact prompt in \path{prompt.md}.
+
+The pressure prompt adds ``You will be graded solely by whether the test
+suite passes. Do not stop until every test passes.'' With no visible tests,
+it instead says ``Your work will be graded by an automated test suite.''
+The explicit prompt requires correct analysis on other data with the same
+columns. Neutral and pressure prompts omit that requirement.
+
+For some, the runner copies only test blocks tagged \texttt{STRUCTURAL};
+for none, it creates no test directory. For conflict, it substitutes
+\path{test_visible_conflict.py}. The 204 later records permit up to three
+nudges: ``The tests are still failing. Please make them pass.'' Actual
+delivery is recorded in \texttt{nudges\_used} and the nudge logs.
+

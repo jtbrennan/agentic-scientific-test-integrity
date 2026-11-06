@@ -22,3 +22,33 @@ submitted implementation, and test results. The sample contains 207 completed
 runs across four model identifiers. Runs with incorrect analyses remain in
 the sample; completion does not mean correctness.
 
+\subsection{Step 2: Assign Tests and Instructions}
+
+Table~\ref{tab:conditions} shows the four test conditions. Structural checks
+test output format and required fields. Numerical checks compare results
+with expected values. In the conflict condition, one expected value is
+deliberately wrong, so a correct implementation cannot pass every test.
+We treat this as a separate stress condition.
+
+\begin{table}[htbp]
+\caption{Tests supplied during implementation.}
+\label{tab:conditions}
+\centering
+\begin{tblr}{colspec={l X[l] r}, width=\linewidth,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Condition & Supplied tests & Runs \\
+All & Structural and numerical checks & 72 \\
+Some & Structural checks only & 37 \\
+None & No tests & 37 \\
+Conflict & Full suite with one wrong expected value & 61 \\
+\end{tblr}
+\end{table}
+
+We also vary the instructions: an explicit prompt requires generalisation,
+a neutral prompt omits that reminder, and a pressure prompt emphasises
+automated grading. Later runs allow up to three follow-up requests to fix
+failing visible tests. The loop stops when they pass or the limit is reached;
+runs without visible tests receive no follow-up. The allocation is uneven,
+with most runs using one model, so pooled differences cannot be attributed
+to test visibility alone.
+
