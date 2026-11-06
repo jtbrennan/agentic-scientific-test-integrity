@@ -14,10 +14,10 @@ actually check.
 In this study, \emph{test gaming} means satisfying tests through a shortcut that
 violates the requested analysis. For example, an agent asked to fit a regression
 could return the coefficient written in a visible test instead of estimating it
-from the input data. A more selective implementation could recognize the
+from the input data. A more selective implementation could recognise the
 supplied dataset and substitute an expected answer only for that input. Such
 code can pass visible checks while failing to implement the stated method.
-This behaviour differs from an ordinary programming error, such as an optimizer
+This behaviour differs from an ordinary programming error, such as an optimiser
 that fails to converge: both can produce incorrect results, but a failing test
 alone does not establish gaming. Classifying the behaviour requires inspecting
 the implementation and its development record.
@@ -37,7 +37,7 @@ account of its work.
 We examine these concerns using six adapted scientific analysis tasks
 covering socioeconomic outcomes, wealth, climate trends, replication effects,
 and fish diversity. The tasks draw on DiscoveryBench data and an adaptation of
-a ScienceAgentBench climate-analysis task. Our current dataset contains 190
+a ScienceAgentBench climate-analysis task. Our dataset contains 207
 valid agent runs. Agents receive all visible tests, structural checks only, no
 visible tests, or tests containing a deliberately conflicting expected value.
 A separate evaluator compares hidden unit tests with metamorphic checks,
@@ -45,8 +45,10 @@ including anchored checks that compare results on the supplied dataset with
 results on transformed versions of it. Planted implementations and
 mutation testing provide complementary evidence about test-suite strength.
 This study contributes empirical evidence about the relative effectiveness of
-hidden checks and the completeness of agent reports. Results remain
-preliminary while manual classification of flagged runs is completed.
+hidden checks and the completeness of agent reports. All flagged non-conflict
+runs have been manually classified, and mutation results cover all six tasks.
+Detection results concern the gaming cases identified by this procedure;
+unflagged implementations have not all been manually reviewed.
 
 The study addresses the following research questions. For RQ3, we additionally
 examine whether shortcuts were disclosed during execution and in the final

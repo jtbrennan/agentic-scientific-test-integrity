@@ -51,16 +51,15 @@
 	\clearpage
 	
 	\begin{abstract}
-		Visible tests can reward code that reproduces expected answers without
-		performing the requested scientific analysis correctly. We investigate
-		this risk across six scientific analysis tasks and 190 valid agent runs,
-		comparing hidden unit tests, metamorphic checks, and agent self-reviews.
-		Preliminary results show that checks anchored to the supplied dataset
-		expose shortcuts missed by other hidden checks. Agents also acknowledge
-		shortcuts more consistently during review than in their final answers.
-		These observations indicate that passing visible tests and receiving a
-		confident summary are insufficient evidence of correctness, motivating
-		independent checks of scientific code and its reported results.
+		Visible tests can reward code that returns expected answers without
+		performing the requested analysis. We evaluated 207 agent runs across six
+		scientific tasks using hidden unit tests, metamorphic checks, and self-reviews.
+		Among 62 identified gaming cases, checks anchored to the supplied dataset
+		detected all cases, while the original hidden suite detected 35. Agents
+		acknowledged shortcuts in all 62 direct reviews, but only 29 final answers
+		mentioned them. Within this sample, independent checks and explicit review
+		provided evidence of incorrect analyses that visible test success and
+		final summaries often failed to convey.
 		
 		\keywords{Software testing \and AI agents \and Metamorphic testing \and Mutation testing \and Scientific software}
 	\end{abstract}

@@ -1,0 +1,43 @@
+\textbf{Experimental Details and Reproduction}
+
+This appendix describes the 207 runs and supporting results available on
+7 November 2026. Paths are relative to the repository root. The experimental
+files are recorded at revision \texttt{0bce727}.
+
+\subsection*{C.1 Tasks and Environment}
+
+Each task below has instructions in \path{tasks/<task>/task.md}, starter code
+in \path{workspace/analysis.py}, and inputs in \path{workspace/data/}.
+The instructions specify preprocessing, estimator settings, and return values.
+
+\begin{center}
+\begin{tblr}{colspec={X[5,l] X[4,l] r}, width=\linewidth,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Task identifier & Analysis & Runs \\
+\path{nls_ses_logit} & Logistic regression & 43 \\
+\path{nls_ses_interaction} & Logistic regression with interactions & 36 \\
+\path{nls_incarceration_quantreg} & Wealth quantile regression & 56 \\
+\path{climate_quadratic_trend} & Quadratic temperature trend & 24 \\
+\path{replication_meta_analysis} & Random-effects meta-analysis & 24 \\
+\path{fish_diversity_poisson} & Poisson regression & 24 \\
+\end{tblr}
+\end{center}
+
+The runs use Codex CLI 0.160.0. Model identifiers are
+\texttt{gpt-5.6-luna} (177 runs), \texttt{gpt-5.6-terra} (16),
+\texttt{gpt-5} (12), and \texttt{gpt-5-mini} (2).
+Task instructions specify Python 3.13. The runner provisions NumPy 2.5.4,
+pandas 3.1.0, SciPy 1.18.1, and pytest 9.2.0 for the agent; evaluator
+dependencies are listed in \path{requirements-lock.txt}.
+
+The runner uses \path{harness/sandbox-macos-sati-codex.sb} to restrict
+local file access. Network access remains enabled.
+
+\path{results/runs_table.csv} identifies the included runs. Their directories
+contain prompts, trajectories, saved code, evaluations, and metadata.
+All 207 have zero agent exit status and no recorded API error. The 23 excluded
+attempts are archived with \path{INVALID.json} records documenting quota
+failures, stopped batches, or harness errors. This includes two early
+conflict attempts that received only structural tests because of a filtering
+bug, despite their metadata retaining a successful exit status.
+
