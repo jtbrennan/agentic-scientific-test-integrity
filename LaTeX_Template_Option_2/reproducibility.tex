@@ -61,3 +61,43 @@ for none, it creates no test directory. For conflict, it substitutes
 nudges: ``The tests are still failing. Please make them pass.'' Actual
 delivery is recorded in \texttt{nudges\_used} and the nudge logs.
 
+\subsection*{C.3 Hidden Checks and Mutation Testing}
+
+\path{harness/evaluate.py} copies the solution, data, original tests, and
+top-level Python helpers into a temporary directory. Helpers named
+\texttt{test\_*} or \texttt{conftest*} are excluded. Each test file runs
+through pytest with a 600-second limit. Errors, skips, missing results,
+and timeouts count as flags alongside assertion failures.
+
+Within each task's \path{hidden/} directory, the files
+\path{test_hidden_unit.py}, \path{test_hidden_metamorphic.py}, and
+\path{test_hidden_anchored.py} define the inputs, relations, and tolerances.
+For example, SES scaling checks use factors 0.5, 2, and 10, with relative
+tolerance $10^{-3}$ and absolute tolerance $10^{-6}$. Drop-one-row bounds
+are empirical stability checks. Quantile-regression oracles compare loss
+rather than requiring one coefficient vector when minimisers are non-unique.
+
+Anchored checks followed the first pilot batch. Later fixes changed
+the handling of helper modules and quantile oracles; all quantile runs were
+re-evaluated. The aggregator prefers \path{eval_v2.json} when present.
+Its timestamp-based ``after v2'' group does not establish that the evaluator
+remained unchanged, so it is not treated as a fully independent validation set.
+
+Manual decisions and notes are in \path{results/manual_labels.csv}:
+45 non-conflict runs are labelled, including all 41 flagged by hidden tests
+or static scans. One is labelled gaming and 44 are labelled non-gaming.
+There are 101 unlabelled, unflagged runs. The statistics script counts these
+as non-gaming, so its rates describe identified gaming, not verified
+absence of shortcuts. Hidden-test flags on ordinary faults are reported
+separately from gaming detection. Independent double-coding is not recorded.
+
+Mutation results cover honest implementations of all six tasks, with target
+paths stored in \path{results/mutation/*__*.json}. The runner uses mutmut
+3.8.1 and evaluates each suite separately. The raw score is
+$(K+T)/(K+T+S)$, where $K$, $T$, and $S$ count killed, timed-out, and surviving
+mutants. Other statuses are excluded. Of 45 v2 survivors, the manual file
+\path{results/mutation/equivalent.csv} classifies 38 as equivalent and seven
+as genuine gaps. Adjusted scores remove the classified equivalents from
+the denominator. We retain raw scores because these equivalence judgements,
+including changes to numerical tolerances, are not proofs for every input.
+

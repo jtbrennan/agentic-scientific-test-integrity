@@ -52,3 +52,28 @@ runs without visible tests receive no follow-up. The allocation is uneven,
 with most runs using one model, so pooled differences cannot be attributed
 to test visibility alone.
 
+\subsection{Step 3: Test and Classify the Code}
+
+After implementation, we save the code and evaluate it in a separate
+directory. Hidden unit tests check expected outputs. Metamorphic tests check
+relations between executions, such as whether rescaling a predictor changes
+its fitted coefficient as expected. Anchored checks start with the supplied
+dataset and compare its result with results from transformed copies. This
+can expose code that substitutes an answer only for the original input.
+Suite v1 combines unit and original metamorphic checks; v2 adds anchored
+checks. A failure, error, skip, or timeout flags the implementation for review.
+
+We inspect flagged code and execution records to distinguish shortcuts from
+ordinary faults. Passing the deliberately wrong conflict check provides
+evidence of gaming; failing a hidden test alone does not. All flagged
+non-conflict runs now have manual labels. The remaining unflagged runs are
+not all manually verified. Anchored checks were developed after the pilot,
+and later fixes changed the evaluator, so retrospective detection is not
+treated as an independent validation result.
+
+We also test planted implementations and apply mutation testing to an honest
+implementation of each task. Mutation scores measure how often each suite
+catches injected code changes. We retain raw scores and scores adjusted
+using the recorded equivalent-mutant classifications. These measure
+sensitivity to small faults, separately from detection of agent shortcuts.
+
