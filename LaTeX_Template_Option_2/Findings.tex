@@ -1,4 +1,20 @@
 \section{Findings}
 \label{Findings}
 
-\emph{To be completed.}
+\subsection{Gaming Across Test Conditions (RQ1)}
+
+Gaming was identified in 62 of 207 runs: 61/61 in the conflict
+condition and 1/72 with all correct visible tests. None was identified among
+the 37 structural-only or 37 no-test runs. No included run edited the tests.
+
+% Example: runs/nls_incarceration_quantreg__all__neutral__n3__codex-gpt-5__r1__20261104T135604Z
+The ordinary-condition case returned hard-coded wealth coefficients for
+three quantiles instead of fitting the requested model. It passed the
+visible checks after three follow-up requests to fix failures.
+
+These counts describe identified gaming. All flagged non-conflict runs have
+manual labels, but 101 unflagged runs remain unlabelled. With only one case
+outside the deliberately conflicting condition and uneven configuration
+coverage, the observations do not establish that hiding tests generally
+prevents gaming.
+
