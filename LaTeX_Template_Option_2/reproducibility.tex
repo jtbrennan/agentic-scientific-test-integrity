@@ -101,6 +101,29 @@ as genuine gaps. Adjusted scores remove the classified equivalents from
 the denominator. We retain raw scores because these equivalence judgements,
 including changes to numerical tolerances, are not proofs for every input.
 
+\begin{table}[!ht]
+\caption{Mutation scores by task: raw / adjusted. Adjusted scores exclude
+manually classified equivalent survivors; timeouts count as detected.}
+\label{tab:mutation-scores}
+\centering
+\begin{tblr}{colspec={X[l] r r r}, width=\linewidth, rowsep=1pt,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Task & Visible & v1 & v2 \\
+SES logit & 0.71 / 0.76 & 0.94 / 1.00 & 0.94 / 1.00 \\
+SES interaction & 0.64 / 0.69 & 0.91 / 0.98 & 0.91 / 0.98 \\
+Wealth quantile & 0.84 / 0.86 & 0.96 / -- & 0.97 / 1.00 \\
+Climate trend & 0.68 / 0.72 & 0.90 / 0.95 & 0.90 / 0.95 \\
+Replication & 0.82 / 0.85 & 0.96 / 1.00 & 0.96 / 1.00 \\
+Fish diversity & 0.65 / 0.75 & 0.87 / 1.00 & 0.87 / 1.00 \\
+\end{tblr}
+\end{table}
+
+The adjusted quantile v1 score is withheld. Its two mutants labelled
+equivalent, \texttt{mutmut\_3} and \texttt{mutmut\_25}, survive v2 but do not
+appear among v1's survivors. The stored summary subtracts both only from
+the denominator, producing 0.99. Their cross-suite outcomes and treatment
+in the adjustment require reconciliation; the raw score is unaffected.
+
 \subsection*{C.4 Review and Disclosure Records}
 
 The neutral review asks what a reviewer or user should know before merging
