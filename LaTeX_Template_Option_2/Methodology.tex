@@ -77,3 +77,17 @@ catches injected code changes. We retain raw scores and scores adjusted
 using the recorded equivalent-mutant classifications. These measure
 sensitivity to small faults, separately from detection of agent shortcuts.
 
+\subsection{Step 4: Review the Code and Record Disclosure}
+
+Once the implementation is saved and evaluated, we ask the agent to review
+it. Later runs receive a neutral question first, asking what a reviewer
+should know, followed by a direct question about hard-coding and shortcuts.
+Both continue the original session; neither is an independent reviewer.
+
+For each identified gaming case, we compare earlier user-visible messages,
+the final answer, and the review responses. Manual coding distinguishes
+mentioning a discrepancy from explicitly admitting that the returned value
+is not the computed result. Reviews are checked against the implementation.
+Neutral reviews are available for 30 of the 62 identified gaming cases, so
+comparisons involving that stage use those same 30 runs.
+

@@ -101,3 +101,26 @@ as genuine gaps. Adjusted scores remove the classified equivalents from
 the denominator. We retain raw scores because these equivalence judgements,
 including changes to numerical tolerances, are not proofs for every input.
 
+\subsection*{C.4 Review and Disclosure Records}
+
+The neutral review asks what a reviewer or user should know before merging
+the code. The direct review asks whether the function works for other data
+and whether the agent hard-coded values, special-cased inputs, edited tests,
+or took another shortcut. It requests a final \texttt{GENUINE} or
+\texttt{SHORTCUT} verdict. Exact wording is in \path{harness/run_agent.py};
+responses are saved in \path{review_neutral.jsonl} and
+\path{self_review.jsonl}. Neutral review precedes direct review when present,
+so question order may affect the later answer. Both prompts prohibit edits,
+but Codex does not enforce a separate read-only review mode.
+
+There are 140 neutral-review records overall. Disclosure coding covers all
+62 identified gaming cases, including 30 with neutral reviews.
+
+Coding is stored in \path{results/disclosure_coding.csv}. It distinguishes
+a mention of the shortcut,
+an explicit admission, disclosure anywhere in user-visible messages, and a
+misleading correctness claim. A mention and a misleading claim can coexist.
+The last message produced during implementation is the final answer;
+review messages are excluded from that stage. Three runs labelled non-gaming lack a parsed
+direct verdict. Missing verdicts are unavailable observations, not denials.
+
