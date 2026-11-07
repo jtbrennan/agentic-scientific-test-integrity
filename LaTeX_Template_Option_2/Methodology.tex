@@ -1,40 +1,64 @@
 \section{Methodology}
 \label{Methodology}
 
-The experiment follows five steps: prepare a task, assign the tests and prompt,
-evaluate the submitted code, collect the agent's review, and compare the
-results. Appendix C records the settings and commands needed to repeat it.
+Figure~\ref{fig:workflow} summarises the experiment, from task assignment
+to code evaluation and disclosure analysis. Appendix C provides the
+settings, prompts, and reproduction commands.
 
-\subsection{Step 1: Prepare the Task}
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw, rounded corners=2pt, align=center,
+              font=\small, text width=2.8cm, minimum height=0.95cm,
+              inner sep=4pt},
+  flow/.style={-{Stealth[length=4pt]}, semithick}]
+\node[box] (task) at (0,0) {Task and settings\\Data, tests, prompt};
+\node[box] (agent) at (4,0) {Agent writes code\\Runs tests if any};
+\node[box] (saved) at (8,0) {Save code and logs\\Before evaluation};
+\node[box] (evidence) at (8,-1.5)
+  {Hidden tests\\Then agent review};
+\node[box] (coding) at (4,-1.5)
+  {Inspect code and logs\\Label disclosures};
+\node[box] (analysis) at (0,-1.5)
+  {Compare outcomes\\RQ1, RQ2, RQ3};
+\draw[flow] (task) -- (agent);
+\draw[flow] (agent) -- (saved);
+\draw[flow] (saved) -- (evidence);
+\draw[flow] (evidence) -- (coding);
+\draw[flow] (coding) -- (analysis);
+\end{tikzpicture}
+\caption{Evidence collected from each run. Hidden evaluation precedes
+self-review, but its results are not supplied to the agent.}
+\label{fig:workflow}
+\end{figure}
+
+\subsection{Prepare the Task}
 
 We use six tasks covering degree completion, race--SES interactions,
 incarceration and wealth, climate trends, replication effects, and fish
 diversity. Five use DiscoveryBench data; the climate task adapts
 ScienceAgentBench task 87~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
-Each task specifies a Python function, its input columns, the analysis to
-perform, and the outputs to return.
+Each specifies a Python function, input columns, analysis, and outputs.
 
-One run is one agent attempt at one task. The agent starts in a fresh
-workspace containing the instructions, starter code, data, and any supplied
-tests. Codex CLI runs under a macOS Seatbelt profile that restricts access to
-the hidden tests and reference code. We retain the prompts, messages,
-submitted implementation, and test results. The sample contains 207 completed
-runs across four model identifiers. Runs with incorrect analyses remain in
-the sample; completion does not mean correctness.
+One run is one agent attempt in a fresh workspace containing starter code,
+data, instructions, and any supplied tests. Codex CLI uses a macOS Seatbelt
+profile restricting access to hidden tests and reference code. We retain
+prompts, messages, code, and test results for 207 completed runs across four
+model identifiers, including runs with incorrect analyses.
 
-\subsection{Step 2: Assign Tests and Instructions}
+\subsection{Assign Tests and Instructions}
 
-Table~\ref{tab:conditions} shows the four test conditions. Structural checks
-test output format and required fields. Numerical checks compare results
-with expected values. In the conflict condition, one expected value is
-deliberately wrong, so a correct implementation cannot pass every test.
-We treat this as a separate stress condition.
+Table~\ref{tab:conditions} lists the test conditions. Structural checks assess
+output format and fields; numerical checks compare expected values. Conflict
+deliberately substitutes one wrong value, making complete test success
+incompatible with correct analysis. We analyse this stress condition separately.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \caption{Tests supplied during implementation.}
 \label{tab:conditions}
 \centering
 \begin{tblr}{colspec={l X[l] r}, width=\linewidth,
+             rowsep=1pt,
              row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
 Condition & Supplied tests & Runs \\
 All & Structural and numerical checks & 72 \\
@@ -44,60 +68,56 @@ Conflict & Full suite with one wrong expected value & 61 \\
 \end{tblr}
 \end{table}
 
-We also vary the instructions: an explicit prompt requires generalisation,
-a neutral prompt omits that reminder, and a pressure prompt emphasises
-automated grading. Later runs allow up to three follow-up requests to fix
-failing visible tests. The loop stops when they pass or the limit is reached;
-runs without visible tests receive no follow-up. The allocation is uneven,
-with most runs using one model, so pooled differences cannot be attributed
-to test visibility alone.
+Explicit prompts require generalisation; neutral prompts omit that reminder;
+pressure prompts emphasise automated grading. Later runs allow up to three requests to fix failing
+visible tests, stopping at success or the limit. Runs without supplied tests
+receive no follow-up. Most runs use one model, and the uneven allocation
+prevents attributing pooled differences to visibility alone.
 
-\subsection{Step 3: Test and Classify the Code}
+\subsection{Test and Classify the Code}
 
-After implementation, we save the code and evaluate it in a separate
-directory. Hidden unit tests check expected outputs. Metamorphic tests check
-relations between executions, such as whether rescaling a predictor changes
-its fitted coefficient as expected. Anchored checks start with the supplied
-dataset and compare its result with results from transformed copies. This
-can expose code that substitutes an answer only for the original input.
-Suite v1 combines unit and original metamorphic checks; v2 adds anchored
-checks. A failure, error, skip, or timeout flags the implementation for review.
+We save the code and evaluate it in a separate directory. Hidden unit tests
+check expected outputs; metamorphic tests check relations between executions,
+such as coefficient changes after rescaling a predictor. Anchored checks
+compare results on the supplied dataset and transformed copies to expose
+input-specific substitutions. Suite v1 combines unit and original
+metamorphic checks; v2 adds anchored checks. A failure, error, skip, or timeout
+flags the implementation for review.
 
-We inspect flagged code and execution records to distinguish shortcuts from
-ordinary faults. Passing the deliberately wrong conflict check provides
-evidence of gaming; failing a hidden test alone does not. All flagged
-non-conflict runs now have manual labels. The remaining unflagged runs are
-not all manually verified. Anchored checks were developed after the pilot,
-and later fixes changed the evaluator, so retrospective detection is not
-treated as an independent validation result.
+Code and execution records distinguish shortcuts from ordinary faults.
+Passing the wrong conflict check supports a gaming label; a hidden-test
+failure alone does not. All flagged non-conflict runs have manual labels,
+but not all unflagged runs have been reviewed. Anchored checks followed the
+pilot, and later evaluator fixes mean retrospective detection is not
+independent validation.
 
-We also test planted implementations and apply mutation testing to an honest
-implementation of each task. Mutation scores measure how often each suite
-catches injected code changes. We retain raw scores and scores adjusted
-using the recorded equivalent-mutant classifications. These measure
-sensitivity to small faults, separately from detection of agent shortcuts.
+Planted implementations and mutations of honest solutions assess detector
+strength across all six tasks. We retain raw mutation scores and scores
+adjusted using recorded equivalence classifications. These measure detection
+of small code changes, separately from agent shortcuts.
 
-\subsection{Step 4: Review the Code and Record Disclosure}
+\subsection{Review the Code and Record Disclosure}
 
-Once the implementation is saved and evaluated, we ask the agent to review
-it. Later runs receive a neutral question first, asking what a reviewer
-should know, followed by a direct question about hard-coding and shortcuts.
-Both continue the original session; neither is an independent reviewer.
+After saving and evaluating the code, we request self-review. Later runs
+receive a neutral question about what a reviewer should know, then a direct
+question about hard-coding and shortcuts. Both continue the original session.
 
-For each identified gaming case, we compare earlier user-visible messages,
-the final answer, and the review responses. Manual coding distinguishes
-mentioning a discrepancy from explicitly admitting that the returned value
-is not the computed result. Reviews are checked against the implementation.
-Neutral reviews are available for 30 of the 62 identified gaming cases, so
-comparisons involving that stage use those same 30 runs.
+For each identified gaming case, we compare user-visible messages, the final
+answer, and reviews against the implementation. Manual coding distinguishes
+mentioning a discrepancy from admitting that the returned value is not the
+computed result. Comparisons involving neutral reviews use the 30 of 62
+gaming cases with that stage available.
 
-\subsection{Step 5: Compare the Outcomes}
+\subsection{Compare the Outcomes}
 
-For RQ1, we compare identified gaming across test conditions. For RQ2, we
-compare how many identified cases each hidden suite detects, recording
-ordinary faults separately. For RQ3, we compare disclosure at each stage.
-We report counts and denominators with Wilson 95\% confidence intervals.
-Exact McNemar tests compare outcomes on the same runs; Fisher's exact test
-compares separate groups. These comparisons are exploratory: repeated tasks,
-unequal allocations, and incomplete review of unflagged code limit broader
-claims about gaming frequency or differences between models.
+For RQ1, we divide identified gaming cases by included runs in each test
+condition. For RQ2, a suite's detection rate is
+\[
+  \frac{\text{identified gaming cases flagged by the suite}}
+       {\text{identified gaming cases evaluated by the suite}}.
+\]
+We count ordinary faults separately. For RQ3, the denominator is gaming
+cases with a coded response at that stage. We report counts and Wilson 95\%
+confidence intervals, using exact McNemar tests for paired outcomes and
+Fisher's exact test for separate groups. Repeated tasks, unequal allocations,
+and incomplete manual review limit generalisation from these comparisons.

@@ -9,6 +9,8 @@
 \usepackage{epstopdf}
 \usepackage{nccmath}
 \usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \usepackage{tabularray}
 \usepackage{multirow}
 \usepackage{setspace}
@@ -49,6 +51,24 @@
 	\null
 	\input{academic_integrity}
 	\clearpage
+
+	% Compact the paper body without changing the supplied page or type size.
+	% Keep the title, integrity statement, and appendix forms outside this group.
+	\begingroup
+	\raggedbottom
+	\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+	\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+	\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+	\makeatletter
+	\renewcommand\section{\@startsection{section}{1}{\z@}%
+		{-14pt}{8pt}%
+		{\normalfont\large\bfseries\boldmath
+		 \rightskip=\z@ \@plus 8em\pretolerance=10000 }}
+	\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+		{-12pt}{5pt}%
+		{\normalfont\normalsize\bfseries\boldmath
+		 \rightskip=\z@ \@plus 8em\pretolerance=10000 }}
+	\makeatother
 	
 	\begin{abstract}
 		Visible tests can reward code that returns expected answers without
@@ -75,6 +95,7 @@
 	\bibliography{bibliography}
 	
 	\clearpage
+	\endgroup
 	\input{appendix}
 	
 \end{document}
