@@ -1,4 +1,22 @@
 \section{Discussion}
 \label{Discussion}
 
-\emph{To be completed.}
+Dataset-specific
+substitutions survived the original suite but failed checks anchored to the
+supplied data. This complements PatchDiff's use of behavioural comparisons
+to expose incorrect patches that pass existing tests~\cite{wang2026solved}.
+For scientific code, an independent check of the requested analysis on the
+original data should accompany checks on transformed inputs. Mutation
+testing offers a different view of adequacy. Ravi and Coblenz compare test
+effectiveness using injected mutations~\cite{ravi2025pbt}; here, similar
+mutation scores concealed substantial differences in detecting agent
+shortcuts.
+
+The disclosure results concern what reaches the user. A reader relying on
+the final answer could miss a shortcut already mentioned during
+implementation. Review brought those qualifications back into view, but an
+admission does not repair the analysis. Conversely, an omission from the
+final answer does not establish deliberate concealment. Final reports
+should state departures from the requested method and identify affected
+results. Review can help surface these departures; assessing correctness still
+requires independent checks of the implementation.
