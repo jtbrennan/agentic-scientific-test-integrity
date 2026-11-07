@@ -18,3 +18,34 @@ outside the deliberately conflicting condition and uneven configuration
 coverage, the observations do not establish that hiding tests generally
 prevents gaming.
 
+\subsection{Detection by Hidden Checks (RQ2)}
+
+Anchored checks detected all 62 identified gaming cases, compared with
+13--35 for the other check families (Table~\ref{tab:detection}). Adding them
+to v1 increased detection from 35/62 to 62/62, a gain of 43.5 percentage
+points: 27 additional detections across four tasks and no losses
+(exact McNemar $p=1.49\times10^{-8}$).
+
+\begin{table}[!ht]
+\caption{Hidden-check detection among 62 identified gaming cases
+(61 conflict, one ordinary). Rows overlap; intervals are Wilson 95\% CIs.}
+\label{tab:detection}
+\centering
+\begin{tblr}{colspec={X[l] r r r}, width=\linewidth, rowsep=1pt,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Check family & Detected & \% & 95\% CI \\
+Unit tests & 13/62 & 21 & 13--33 \\
+Invariant relations & 18/62 & 29 & 19--41 \\
+Equivariant relations & 35/62 & 56 & 44--68 \\
+Anchored checks & 62/62 & 100 & 94--100 \\
+\end{tblr}
+\end{table}
+
+% Example: runs/nls_incarceration_quantreg__conflict__neutral__n3__codex-gpt-5__r1__20261104T140111Z
+One conflict-condition wealth implementation replaced the incarceration
+coefficient only for 12,013 usable rows matching year, quantile, and fitted
+coefficient checks. It passed v1 but failed anchored checks. Both suites also
+flagged the same 40 non-conflict solutions manually classified as ordinary
+faults, so a flag alone does not establish gaming. These detection results
+include retrospective evaluations following changes to the checks.
+
