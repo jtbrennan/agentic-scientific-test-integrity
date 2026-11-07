@@ -124,3 +124,48 @@ The last message produced during implementation is the final answer;
 review messages are excluded from that stage. Three runs labelled non-gaming lack a parsed
 direct verdict. Missing verdicts are unavailable observations, not denials.
 
+\subsection*{C.5 Repeating the Evaluation}
+
+Use a separate checkout of the experimental revision so replay does not
+overwrite the archived results. From its root, prepare the evaluator:
+\begin{verbatim}
+python3.13 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-lock.txt
+\end{verbatim}
+The original data files are not included in this checkout. Restore them
+from the experiment archive for an exact replay. The alternative
+\path{scripts/fetch_data.sh} downloads and prepares inputs, but its upstream
+revisions are unpinned. Record source revisions and file hashes when
+distributing the final reproduction package.
+
+Set \texttt{RUN} to a saved run directory and \texttt{TASK} to its matching
+task directory, then evaluate the saved code and helpers:
+\begin{verbatim}
+python harness/evaluate.py "$TASK" "$RUN/solution.py" \
+  --workspace "$RUN/workspace" --json "$RUN/eval_v2.json"
+python harness/analyze.py
+python harness/disclosure.py
+python harness/stats.py
+python harness/mutation_summary.py
+\end{verbatim}
+The last command summarises saved mutation results; it does not generate
+new mutants. New mutation runs use \path{harness/mutation.py} with the
+recorded target and suites \texttt{visible,unit,mr\_inv,mr\_eqv,anchored,v1,v2}.
+
+\begin{samepage}
+To repeat agent generation, use the macOS sandbox setup and CLI version
+above, provide API configuration through the ignored \path{.env} file, and
+match the run's recorded task, model, condition, prompt, and nudge limit:
+\begin{verbatim}
+python harness/run_agent.py tasks/nls_ses_logit \
+  --agent codex --model gpt-5.6-luna --condition all \
+  --prompt neutral --nudges 3 --rep 1 --timeout 1200
+\end{verbatim}
+\end{samepage}
+The example permits 1,200 seconds per implementation or nudge; reviews have
+600-second limits. No fixed model sampling seed is recorded, so repeating
+the setup need not produce the same code. For comparisons, retain task,
+model, prompt, and batch information, use only available responses, and
+pair outcomes from the same run. The saved aggregate tables retain the
+label and missing-response limitations described above.
