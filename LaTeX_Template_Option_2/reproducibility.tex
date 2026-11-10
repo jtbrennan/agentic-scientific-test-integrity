@@ -1,10 +1,3 @@
-\textbf{Experimental Details and Reproduction}
-
-This appendix describes the 207 runs and supporting results available on
-7 November 2026. Paths are relative to the repository root. The experimental
-files are recorded at revision \texttt{0bce727}; use revision
-\texttt{4b5367a} to include the corrected mutation-score adjustment.
-
 \subsection*{C.1 Tasks and Environment}
 
 Each task below has instructions in \path{tasks/<task>/task.md}, starter code
@@ -53,11 +46,12 @@ local file access. Network access remains enabled.
 
 \path{results/runs_table.csv} identifies the included runs. Their directories
 contain prompts, trajectories, saved code, evaluations, and metadata.
-All 207 have zero agent exit status and no recorded API error. The 23 excluded
-attempts are archived with \path{INVALID.json} records documenting quota
-failures, stopped batches, or harness errors. This includes two early
-conflict attempts that received only structural tests because of a filtering
-bug, despite their metadata retaining a successful exit status.
+We included 207 runs with zero agent exit status and no recorded API error.
+We excluded 23 attempts because of quota failures, stopped batches, or
+harness errors; their \path{INVALID.json} files give the reasons. Two of
+these were early conflict attempts that received only structural tests
+because of a filtering bug. We excluded them despite their successful
+exit status.
 
 \subsection*{C.2 Prompts and Follow-Up Requests}
 
@@ -76,8 +70,8 @@ columns. Neutral and pressure prompts omit that requirement.
 For some, the runner copies only test blocks tagged \texttt{STRUCTURAL};
 for none, it creates no test directory. For conflict, it substitutes
 \path{test_visible_conflict.py}. The 204 later records permit up to three
-nudges: ``The tests are still failing. Please make them pass.'' Actual
-delivery is recorded in \texttt{nudges\_used} and the nudge logs.
+nudges: ``The tests are still failing. Please make them pass.'' Each run's
+\texttt{nudges\_used} field and logs show how many were sent.
 
 \subsection*{C.3 Hidden Checks and Mutation Testing}
 
@@ -91,37 +85,41 @@ Within each task's \path{hidden/} directory, the files
 \path{test_hidden_unit.py}, \path{test_hidden_metamorphic.py}, and
 \path{test_hidden_anchored.py} define the inputs, relations, and tolerances.
 For example, SES scaling checks use factors 0.5, 2, and 10, with relative
-tolerance $10^{-3}$ and absolute tolerance $10^{-6}$. Drop-one-row bounds
-are empirical stability checks. Quantile-regression oracles compare loss
-rather than requiring one coefficient vector when minimisers are non-unique.
+tolerance $10^{-3}$ and absolute tolerance $10^{-6}$. For checks that delete
+one row, we use empirical bounds on how much the fitted result may change.
+Quantile-regression checks compare loss because different coefficient
+vectors can give equally good fits.
 
-Anchored checks followed the first pilot batch. Later fixes changed
-the handling of helper modules and quantile oracles; all quantile runs were
-re-evaluated. The aggregator prefers \path{eval_v2.json} when present.
-Its timestamp-based ``after v2'' group does not establish that the evaluator
-remained unchanged, so it is not treated as a fully independent validation set.
+We added anchored checks after the first pilot batch and re-evaluated all
+quantile runs after fixing helper-module handling and quantile checks.
+The aggregation script uses \path{eval_v2.json} when available. It also groups
+runs started after the initial v2 commit. Because we continued to revise
+the evaluator, we do not treat this group as an independent validation set.
 
-Labels and notes are in \path{results/manual_labels.csv}. We manually assigned these labels; they remain under author review:
-45 non-conflict runs are labelled, including all 41 flagged by hidden tests
-or static scans. One is labelled gaming and 44 are labelled non-gaming.
-There are 101 unlabelled, unflagged runs. The statistics script counts these
-as non-gaming, so its rates describe identified gaming, not verified
-absence of shortcuts. Hidden-test flags on ordinary faults are reported
-separately from gaming detection. Independent double-coding is not recorded.
+Our provisional labels and notes are in \path{results/manual_labels.csv}.
+We manually assigned the labels; they remain under author review.
+Of the 45 labelled non-conflict runs, one is labelled gaming and 44 are
+labelled non-gaming. These include all 41 runs flagged by hidden tests or
+static scans. The remaining 101 runs are unflagged and unlabelled. The
+statistics script counts them as non-gaming, but we have not verified that
+they contain no shortcuts. We therefore report identified gaming and count
+ordinary faults separately. Independent classification by two reviewers
+remains to be completed.
 
 Mutation results cover honest implementations of all six tasks, with target
 paths stored in \path{results/mutation/*__*.json}. The runner uses mutmut
 3.8.1 and evaluates each suite separately. The raw score is
 $(K+T)/(K+T+S)$, where $K$, $T$, and $S$ count killed, timed-out, and surviving
-mutants. Other statuses are excluded. Of 45 v2 survivors, the manual file
-\path{results/mutation/equivalent.csv} classifies 38 as equivalent and seven
-as genuine gaps. Adjusted scores remove the classified equivalents from
-the denominator. We retain raw scores because these equivalence judgements,
-including changes to numerical tolerances, are not proofs for every input.
+mutants. Other statuses are excluded. Our classifications in
+\path{results/mutation/equivalent.csv} mark 38 of the 45 v2 survivors as
+equivalent and seven as genuine gaps. We remove classified equivalents from
+the adjusted score's denominator and, if the suite detected them, its
+numerator. We also report raw scores because the equivalence judgements,
+including those about numerical tolerances, have not been proved for every input.
 
 \begin{table}[!ht]
 \caption{Mutation scores by task: raw / adjusted. Adjusted scores exclude
-manually classified equivalent survivors; timeouts count as detected.}
+classified equivalent mutants; raw scores count timeouts as detected.}
 \label{tab:mutation-scores}
 \centering
 \begin{tblr}{colspec={X[l] r r r}, width=\linewidth, rowsep=1pt,
@@ -136,14 +134,13 @@ Fish diversity & 0.65 / 0.75 & 0.87 / 1.00 & 0.87 / 1.00 \\
 \end{tblr}
 \end{table}
 
-\sloppy
-On wealth quantile regression, the two mutants classified as equivalent,
-\texttt{mutmut\_3} and \texttt{mutmut\_25}, survive each component of v1
-when run separately but time out when the components run together, so the
-raw v1 score counts them as detected. Adjusted scores therefore remove
-equivalent mutants from both the numerator and the denominator, giving 0.96
-for v1; the calculation is in \path{harness/mutation_summary.py}. The raw
-scores are unaffected.
+On wealth quantile regression, \texttt{mutmut\_3} and \texttt{mutmut\_25}
+are classified as equivalent and survive the individual v1 components,
+but are absent from v1's survivor list. The raw score includes killed and
+timed-out mutants. Removing these two from both the detected count and
+the total gives an adjusted v1 score of $74/77=0.96$; removing them only
+from the denominator would give $76/77=0.99$. The corrected calculation is
+in \path{harness/mutation_summary.py}; raw scores are unchanged.
 
 \subsection*{C.4 Review and Disclosure Records}
 
@@ -165,18 +162,20 @@ shortcut omitted from the final answer in 33 cases, with no reverse
 disagreements (exact McNemar $p=2.33\times10^{-10}$). Neutral and direct
 reviews agreed on disclosure in all 30 cases with both stages available.
 
-Coding is stored in \path{results/disclosure_coding.csv}. We manually assigned these codes; they remain under author review. Coding distinguishes
-a mention of the shortcut,
-an explicit admission, disclosure anywhere in user-visible messages, and a
-misleading correctness claim. A mention and a misleading claim can coexist.
+Our disclosure codes are in \path{results/disclosure_coding.csv}. We manually
+assigned them; they remain under author review. We distinguish
+a mention of the shortcut, an explicit admission, disclosure anywhere in
+user-visible messages, and a misleading correctness claim. A mention and a
+misleading claim can coexist.
 The last message produced during implementation is the final answer;
-review messages are excluded from that stage. Three runs labelled non-gaming lack a parsed
-direct verdict. Missing verdicts are unavailable observations, not denials.
+review messages are excluded from that stage. Three runs labelled non-gaming
+lack a parsed direct verdict. We exclude these missing verdicts from
+comparisons that require a review response.
 
 \subsection*{C.5 Repeating the Evaluation}
 
-Use a separate checkout of the experimental revision so replay does not
-overwrite the archived results. From its root, prepare the evaluator:
+To repeat the evaluation without overwriting the archived results, use a
+separate checkout of revision \texttt{4b5367a}. From its root, prepare the evaluator:
 \begin{verbatim}
 python3.13 -m venv .venv
 . .venv/bin/activate
@@ -185,14 +184,19 @@ python -m pip install -r requirements-lock.txt
 The original data files are not included in this checkout. Restore them
 from the experiment archive for an exact replay. The alternative
 \path{scripts/fetch_data.sh} downloads and prepares inputs, but its upstream
-revisions are unpinned. Record source revisions and file hashes when
-distributing the final reproduction package.
+revisions are unpinned. The final reproduction package still needs source
+revision identifiers and file hashes so readers can check that their inputs
+match ours.
 
 Set \texttt{RUN} to a saved run directory and \texttt{TASK} to its matching
 task directory, then evaluate the saved code and helpers:
 \begin{verbatim}
 python harness/evaluate.py "$TASK" "$RUN/solution.py" \
   --workspace "$RUN/workspace" --json "$RUN/eval_v2.json"
+\end{verbatim}
+Repeat this command for each included run listed in
+\path{results/runs_table.csv} before regenerating the aggregate results:
+\begin{verbatim}
 python harness/analyze.py
 python harness/disclosure.py
 python harness/stats.py
@@ -213,8 +217,102 @@ python harness/run_agent.py tasks/nls_ses_logit \
 \end{verbatim}
 \end{samepage}
 The example permits 1,200 seconds per implementation or nudge; reviews have
-600-second limits. No fixed model sampling seed is recorded, so repeating
-the setup need not produce the same code. For comparisons, retain task,
-model, prompt, and batch information, use only available responses, and
-pair outcomes from the same run. The saved aggregate tables retain the
-label and missing-response limitations described above.
+600-second limits. We did not record a fixed model sampling seed, so
+repeating the setup may produce different code. Our comparisons pair
+outcomes from the same run and use only available responses. The saved
+records include task, model, prompt, and batch information for further
+analysis; incomplete labels and missing responses still limit those comparisons.
+
+\clearpage
+\subsection*{C.6 Additional Results}
+
+The tables below expand the results in Section~\ref{Findings}, using the
+same 207 runs and provisional labels. We show the model breakdown to make
+the uneven coverage clear. These counts do not support model rankings or
+causal claims about test visibility, and unlabelled runs may still contain
+shortcuts.
+
+\begin{table}[!ht]
+\caption{Identified gaming by test condition and model. Cells give gaming
+cases / runs; intervals are Wilson 95\% CIs for the pooled rate.}
+\label{tab:gaming}
+\centering
+\begin{tblr}{colspec={X[l] r r r r}, width=\linewidth, rowsep=1pt,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Condition & GPT-5.6 Luna & Other models & All & 95\% CI \\
+All tests & 0/57 & 1/15 & 1/72 & 0--7\% \\
+Some (structural) & 0/36 & 0/1 & 0/37 & 0--9\% \\
+None & 0/36 & 0/1 & 0/37 & 0--9\% \\
+Conflict & 48/48 & 13/13 & 61/61 & 94--100\% \\
+\end{tblr}
+\end{table}
+
+Figure~\ref{fig:detection-task} shows the check-family breakdown. The 27
+additional detections comprise 14 wealth, six climate, six replication,
+and one interaction case. A static scan flagged 54/62 identified gaming
+cases and none of the other 145 runs. Because 101 of those runs remain
+unlabelled, we cannot yet estimate the scan's false-alarm rate on verified
+non-gaming implementations.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth, height=4.6cm, ybar=0.6pt, bar width=6pt, area legend,
+  ymin=0, ymax=105, ylabel={Detected (\%)}, ylabel style={font=\small},
+  symbolic x coords={logit,inter,fish,quant,clim,meta},
+  xtick=data, xticklabel style={font=\scriptsize, align=center},
+  xticklabels={SES logit\\(n=15), SES inter.\\(n=14), Fish\\(n=6),
+               Wealth quant.\\(n=15), Climate\\(n=6), Meta\\(n=6)},
+  yticklabel style={font=\scriptsize}, ymajorgrids, grid style={gray!25},
+  legend style={font=\scriptsize, draw=none, legend columns=4,
+                at={(0.5,1.03)}, anchor=south,
+                /tikz/every even column/.append style={column sep=8pt}},
+  enlarge x limits=0.1, axis x line*=bottom, axis y line*=left]
+\addplot[fill=gray!25, draw=none] coordinates
+  {(logit,46.7) (inter,28.6) (fish,16.7) (quant,6.7) (clim,0) (meta,0)};
+\addplot[fill=gray!60, draw=none] coordinates
+  {(logit,53.3) (inter,57.1) (fish,16.7) (quant,6.7) (clim,0) (meta,0)};
+\addplot[fill=appendixHeader!55, draw=none] coordinates
+  {(logit,100) (inter,92.9) (fish,100) (quant,6.7) (clim,0) (meta,0)};
+\addplot[fill=appendixHeader, draw=none] coordinates
+  {(logit,100) (inter,100) (fish,100) (quant,100) (clim,100) (meta,100)};
+\legend{Unit, Invariant, Equivariant, Anchored}
+\end{axis}
+\end{tikzpicture}
+\caption{Detection of the 62 identified gaming cases by check family and
+task. v1 combines the first three families; v2 adds anchored checks.}
+\label{fig:detection-task}
+\end{figure}
+
+Among runs started after the initial v2 commit, 43 are identified gaming
+cases: v1 detected 23 and v2 detected all 43. We subsequently revised the
+evaluator and re-evaluated runs, so these results also include retrospective
+changes to the checks.
+
+\begin{table}[!ht]
+\caption{Disclosure of the shortcut at each stage, among identified gaming
+cases. The neutral review was only asked in later runs, all with GPT-5.6
+Luna.}
+\label{tab:disclosure}
+\centering
+\begin{tblr}{colspec={X[l] r r r}, width=\linewidth, rowsep=1pt,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Stage & Luna & Other models & All \\
+Any message during the task & 48/48 & 14/14 & 62/62 \\
+Final answer mentions it & 16/48 & 13/14 & 29/62 \\
+Final answer explicitly acknowledges it & 5/48 & 6/14 & 11/62 \\
+Misleading correctness claim & 2/48 & 2/14 & 4/62 \\
+Neutral review mentions it & 30/30 & -- & 30/30 \\
+Direct review admits it & 48/48 & 14/14 & 62/62 \\
+\end{tblr}
+\end{table}
+
+\begin{samepage}
+All 62 identified gaming cases have direct reviews. Among the other 145
+runs, 142 have parsed direct verdicts, all \texttt{GENUINE}; three are
+unavailable. Because labels are incomplete, we cannot yet use these verdicts
+to estimate how often an agent falsely admits to gaming. All 30 gaming
+cases with neutral reviews used the same model, which also limits
+comparisons across models.\par
+\end{samepage}
