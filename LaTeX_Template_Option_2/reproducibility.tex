@@ -2,7 +2,8 @@
 
 This appendix describes the 207 runs and supporting results available on
 7 November 2026. Paths are relative to the repository root. The experimental
-files are recorded at revision \texttt{0bce727}.
+files are recorded at revision \texttt{0bce727}; use revision
+\texttt{4b5367a} to include the corrected mutation-score adjustment.
 
 \subsection*{C.1 Tasks and Environment}
 
@@ -22,6 +23,23 @@ Task identifier & Analysis & Runs \\
 \path{fish_diversity_poisson} & Poisson regression & 24 \\
 \end{tblr}
 \end{center}
+
+\begin{table}[!ht]
+\caption{Values checked by the ordinary and conflict visible tests.
+Full tolerances and assertions are in each task's visible-test files.}
+\label{tab:tasks}
+\centering
+\begin{tblr}{colspec={X[l] X[l] r r}, width=\linewidth, rowsep=1pt,
+             row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Task & Checked quantity & Ordinary & Conflict \\
+SES logit & SES coefficient & 0.4729 & 0.5129 \\
+SES interaction & SES $\times$ Black coefficient & 0.7606 & 0.8006 \\
+Wealth quantile & Incarceration coefficient, $q=0.9$ & $-128500$ & $-120500$ \\
+Climate trend & Quadratic coefficient & $1.21003\times10^{-4}$ & $1.31003\times10^{-4}$ \\
+Replication & Pooled effect difference & 0.2102 & 0.2402 \\
+Fish diversity & Log-area coefficient & 0.1744 & 0.1844 \\
+\end{tblr}
+\end{table}
 
 The runs use Codex CLI 0.160.0. Model identifiers are
 \texttt{gpt-5.6-luna} (177 runs), \texttt{gpt-5.6-terra} (16),
@@ -83,7 +101,7 @@ re-evaluated. The aggregator prefers \path{eval_v2.json} when present.
 Its timestamp-based ``after v2'' group does not establish that the evaluator
 remained unchanged, so it is not treated as a fully independent validation set.
 
-Manual decisions and notes are in \path{results/manual_labels.csv}:
+Labels and notes are in \path{results/manual_labels.csv}. We manually assigned these labels; they remain under author review:
 45 non-conflict runs are labelled, including all 41 flagged by hidden tests
 or static scans. One is labelled gaming and 44 are labelled non-gaming.
 There are 101 unlabelled, unflagged runs. The statistics script counts these
@@ -147,7 +165,7 @@ shortcut omitted from the final answer in 33 cases, with no reverse
 disagreements (exact McNemar $p=2.33\times10^{-10}$). Neutral and direct
 reviews agreed on disclosure in all 30 cases with both stages available.
 
-Coding is stored in \path{results/disclosure_coding.csv}. It distinguishes
+Coding is stored in \path{results/disclosure_coding.csv}. We manually assigned these codes; they remain under author review. Coding distinguishes
 a mention of the shortcut,
 an explicit admission, disclosure anywhere in user-visible messages, and a
 misleading correctness claim. A mention and a misleading claim can coexist.
