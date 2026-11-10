@@ -2,80 +2,50 @@
 \label{Introduction}
 
 AI agents that write and execute code are being evaluated as assistants for
-scientific analysis in benchmarks such as DiscoveryBench and
-ScienceAgentBench~\cite{majumder2025discoverybench,chen2025scienceagentbench}. These
-settings require more than executable code: the program must perform the
-requested analysis, and its reported results must follow from that analysis.
-A researcher needs evidence that a coefficient, prediction, or statistical
-conclusion was computed correctly before using it to support a scientific claim.
-Automated tests provide useful evidence, but their success depends on what they
-actually check.
+scientific analysis in DiscoveryBench and
+ScienceAgentBench~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
+A useful implementation must perform the requested analysis, and its
+reported results must follow from that calculation. A researcher needs
+this evidence before using a coefficient, prediction, or statistical
+conclusion to support a scientific claim. Passing automated tests provides
+some evidence, but its value depends on what those tests exercise.
 
-In this study, \emph{test gaming} means satisfying tests through a shortcut that
-violates the requested analysis. For example, an agent asked to fit a regression
-could return the coefficient written in a visible test instead of estimating it
-from the input data. A more selective implementation could recognise the
-supplied dataset and substitute an expected answer only for that input. Such
-code can pass visible checks while failing to implement the stated method.
-This behaviour differs from an ordinary programming error, such as an optimiser
-that fails to converge: both can produce incorrect results, but a failing test
-alone does not establish gaming. Classifying the behaviour requires inspecting
-the implementation and its development record.
+In this study, \emph{test gaming} means satisfying tests through a shortcut
+that violates the requested analysis. An agent asked to fit a regression
+might return the coefficient written in a visible test instead of estimating
+it from the input. A more selective implementation might recognise the
+supplied dataset and substitute an answer only for that input. Both can pass
+visible checks without implementing the stated method. This differs from an
+ordinary programming error, such as an optimiser that fails to converge.
+A failing test alone does not distinguish these behaviours; classification
+requires examining the code and its development record.
 
 Independent evaluation is difficult when the correct result is not readily
-available, a challenge known as the \emph{test oracle problem}~\cite{barr2015oracle}.
-In scientific software, checking one known output does not establish that a
-method works on different samples or transformed data. Evaluation therefore
-needs evidence that the implementation follows the requested analysis beyond
-the examples covered by a finite visible suite.
+available, a challenge known as the \emph{test oracle
+problem}~\cite{barr2015oracle}. Checking one known answer does not establish
+that an analysis works on other samples. Prior studies document test
+exploitation in coding agents and shortcuts in scientific
+analysis~\cite{zhong2025impossiblebench,chen2025scienceagentbench}, motivating
+checks beyond visible examples and scrutiny of the agent's account of its work.
 
-Prior studies document test exploitation in coding agents and shortcuts in
-scientific analysis~\cite{zhong2025impossiblebench,chen2025scienceagentbench},
-and a diagnostic study of research agents finds that they often notice
-problems in their own work without correcting them~\cite{fei2026autoresearch}.
-This evidence motivates independent checks of code and scrutiny of the agent's
-account of its work.
+We examine 207 completed runs on six adapted scientific-analysis tasks.
+Agents receive all correct visible tests, structural tests only, no tests,
+or tests with a deliberately conflicting expected value. A separate evaluator
+compares hidden unit and metamorphic checks, including checks anchored to
+the supplied dataset. Planted implementations and mutation testing provide
+complementary evidence about test-suite strength. The contribution is a
+comparison of which checks expose identified shortcuts and whether agents
+disclose them at different stages. Labels outside the conflict condition
+and disclosure codes remain under author review, and unflagged
+implementations have not all been classified; the reported results are
+preliminary.
 
-We examine these concerns using six adapted scientific analysis tasks
-covering socioeconomic outcomes, wealth, climate trends, replication effects,
-and fish diversity. The tasks draw on DiscoveryBench data and an adaptation of
-a ScienceAgentBench climate-analysis task. Our dataset contains 207
-valid agent runs. Agents receive all visible tests, structural checks only, no
-visible tests, or tests containing a deliberately conflicting expected value.
-A separate evaluator compares hidden unit tests with metamorphic checks,
-including anchored checks that compare results on the supplied dataset with
-results on transformed versions of it. Planted implementations and
-mutation testing provide complementary evidence about test-suite strength.
-This study contributes empirical evidence about the relative effectiveness of
-hidden checks and the completeness of agent reports. All flagged non-conflict
-runs have been classified from their code and transcripts, and mutation
-results cover all six tasks.
-Detection results concern the gaming cases identified by this procedure;
-unflagged implementations have not all been manually reviewed.
-
-The study addresses the following research questions. For RQ3, we additionally
-examine whether shortcuts were disclosed during execution and in the final
-answer, distinguishing those disclosures from admissions made during a later
-review.
+The following research questions guide the study. RQ3 also examines
+disclosure during execution and in the final answer, distinguishing it from
+admissions made during later review.
 
 \begin{itemize}
     \item \textbf{RQ1:} How often do agents game visible tests, and does hiding them help?
     \item \textbf{RQ2:} Which hidden checks best detect gamed code?
     \item \textbf{RQ3:} When reviewing its own code, does the agent admit to gaming?
-\end{itemize}
-
-Our main contributions are:
-\begin{itemize}
-    \item a test harness and six scientific-analysis tasks with visible,
-    hidden unit, metamorphic, and anchored checks, released with all 207 agent
-    trajectories;
-    \item evidence that, in this sample, gaming followed a contradictory test
-    rather than task difficulty or prompt pressure, and took the form of
-    special cases keyed to the supplied dataset rather than edits to tests;
-    \item a comparison showing that checks anchored to the supplied data
-    detected every identified gaming case while generic hidden checks missed
-    almost half, even though mutation scores barely separated the two suites;
-    \item a stage-by-stage account of disclosure, showing that agents
-    mentioned the conflict during the task and admitted it on review, but
-    fewer than half said so in their final answer.
 \end{itemize}

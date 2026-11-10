@@ -3,124 +3,65 @@
 
 \subsection{Test Gaming and Evaluation}
 
-Scientific-agent benchmarks assess both discoveries and executable analyses.
 DiscoveryBench evaluates hypotheses derived from datasets, while
-ScienceAgentBench evaluates programs against scientific task
-criteria~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
-ScienceAgentBench reports agents reading test labels instead of training the
-requested model, showing that an expected answer can conceal an invalid
-procedure~\cite{chen2025scienceagentbench}.
-AutoResearchEval annotates 800 trajectories from coding-agent harnesses on
-100 frontier research tasks and finds circular validation, implementation
-discrepancies, and overclaiming in most of them; in 82.5\% of trajectories
-an agent noticed a problem with its own work without
-correcting it~\cite{fei2026autoresearch}. Such behaviour is expected in
-principle: Skalse et al. show that a proxy objective is rarely unhackable for
-a broad class of policies~\cite{skalse2022defining}, and a finite visible test
-suite is such a proxy for the requested analysis.
+ScienceAgentBench evaluates executable scientific
+analyses~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
+ScienceAgentBench documents agents returning test labels instead of training
+the requested model: an expected answer can conceal an invalid procedure.
 
-Weak tests also admit ordinary errors. PatchDiff finds behavioural differences
-between agent and developer patches on SWE-bench Verified, with manual review
-confirming errors in a subset~\cite{wang2026solved}. Passing tests therefore
-provides incomplete evidence of correctness, while failing additional checks
-does not alone establish gaming. ImpossibleBench isolates specification-violating
-shortcuts by introducing conflicting tests. Hiding tests reduces successful
-exploitation but also reduces performance on the original tasks; read-only
-access prevents test edits without eliminating
-special-casing~\cite{zhong2025impossiblebench}. Test access can therefore affect
-both legitimate implementation and opportunities for exploitation.
-
-\subsection{Overfitting in Program Repair}
-
-Software engineering met the same problem in automated program repair
-(APR). Qi et al. found that most patches reported by generate-and-validate
-repair systems were not correct and that many were equivalent to deleting
-functionality, even though they passed the supplied
-tests~\cite{qi2015analysis}. Smith et al. named this \emph{overfitting}: a
-patch that passes the tests used to guide repair but breaks behaviour that an
-independent held-out suite checks~\cite{smith2015cure}. Held-out suites
-became the standard way to measure it, and the idea carries over to coding
-agents. UTBoost augments SWE-bench tests and finds erroneous patches that the
-original tests had accepted, changing leaderboard
-rankings~\cite{yu2025utboost}. Ahmed et al. split tests into visible and
-hidden sets for LLM repair and find that visible tests usually help hidden-test
-performance, although overfitting still occurs in some
-cases~\cite{ahmed2025overfitting}. Our design follows this tradition, with
-one difference: the hidden checks must work without a reference
-implementation of the scientific analysis.
+A related problem arises in automated program repair. Smith et al. evaluate
+patches with independent tests and find that passing the repair tests does
+not ensure correctness on untested behaviours~\cite{smith2015cure}.
+PatchDiff similarly exposes behavioural differences between agent and
+developer patches on SWE-bench, with manual review confirming errors in a
+subset~\cite{wang2026solved}. Neither test failure nor overfitting alone
+establishes gaming. ImpossibleBench instead introduces conflicting tests so
+that passing them requires a specification-violating shortcut. Hiding tests
+reduces exploitation but also reduces performance on the original
+tasks~\cite{zhong2025impossiblebench}. Visibility can therefore affect both
+legitimate implementation and opportunities for shortcuts.
 
 \subsection{Hidden Oracles and Test Adequacy}
 
-Preventing exploitation and detecting it are different evaluation problems.
-The EvilGenie preprint compares held-out tests, test-edit detection, and LLM
-judges. Its held-out tests miss some heuristic solutions and flag some
-legitimate attempts that mishandle edge cases~\cite{gabor2026evilgenie}.
-This qualifies the role of hidden tests: restricting access may discourage
-shortcuts, but detector accuracy still depends on what the tests exercise.
+Hiding tests does not ensure that they detect shortcuts. The EvilGenie
+preprint reports held-out tests missing heuristic solutions and flagging
+legitimate attempts with edge-case errors~\cite{gabor2026evilgenie}.
+Barr et al. distinguish generating inputs from deciding whether outputs are
+correct~\cite{barr2015oracle}. Metamorphic testing addresses this oracle
+problem through relations between executions, with effectiveness depending
+on the relations chosen~\cite{segura2016survey}.
 
-Barr et al.'s oracle survey distinguishes generating inputs from deciding
-whether outputs are correct~\cite{barr2015oracle}. Metamorphic testing checks
-relations between executions, reducing reliance on known answers. Segura et al.
-show that relation selection affects fault detection~\cite{segura2016survey}.
-For an identifiable, unpenalised linear regression, reordering observations
-should preserve the coefficients, while multiplying one predictor by a nonzero
-constant should divide its coefficient by that constant, within numerical
-tolerance. These illustrate invariant and equivariant relations, respectively.
-A constant-returning implementation can satisfy row-order invariance yet fail
-the scaling check. The relevant issue is which behaviours a relation rules out,
-rather than how many tests are hidden.
+For an identifiable, unpenalised linear regression, reordering rows should
+preserve coefficients; multiplying a predictor by a nonzero constant should
+divide its coefficient by that constant, within numerical tolerance. These
+are invariant and equivariant relations, respectively. A constant answer
+can satisfy the first but fail the second. Luu et al. derive regression
+relations from mathematical properties and evaluate them using mutation
+analysis~\cite{luu2021regression}.
 
-Metamorphic testing has a long record with scientific and statistical
-programs, where exact oracles are scarce. Chen et al. applied it to
-bioinformatics programs~\cite{chen2009bioinformatics}, and Luu et al. derived
-relations for multiple linear regression from its mathematical properties and
-evaluated them with mutation analysis~\cite{luu2021regression}. Liu et al.
-report that a small, diverse set of relations can approach the fault-detection
-ability of a true oracle~\cite{liu2014effectively}. Because numerical results
-are approximate, such checks need tolerances; Hook and Kelly argue that
-trustworthiness, rather than proven correctness, is the realistic target for
-testing scientific software~\cite{hook2009trustworthiness}.
-
-Property-based tests check specified properties over generated inputs.
-Ravi and Coblenz use mutation testing to evaluate property-based tests in 40
-Python projects, finding higher average detection per test than unit tests,
-with variation across property categories~\cite{ravi2025pbt}. Their
-observational results support evaluating test design, without guaranteeing
-superiority on new tasks. Mutation testing measures a suite by the share of small, injected code
-changes it detects~\cite{papadakis2019mutation}. Just et al. found that
-detecting mutants correlates with detecting real faults, independently of
-coverage, though not every real fault is coupled to a
-mutant~\cite{just2014mutants}; coverage alone is a weaker
-indicator~\cite{inozemtseva2014coverage}. Equivalent mutants, which do not
-change behaviour, cannot be killed and must be identified before a score is
-interpreted~\cite{madeyski2014equivalent}. Mutation scores therefore measure
-detection of injected code changes, so evidence about agent shortcuts must
-also come from evaluating those shortcuts directly.
+Ravi and Coblenz find higher average mutant detection per test for
+property-based tests than unit tests in their observational Python
+study~\cite{ravi2025pbt}. Just et al. find a correlation between mutant and
+real-fault detection after controlling for coverage~\cite{just2014mutants}.
+These results support mutation analysis as evidence of test adequacy, but
+do not establish that it predicts detection of agent shortcuts. Those
+behaviours also require direct evaluation.
 
 \subsection{Agent Self-Review and Disclosure}
 
-Language-based assessments require separate validation. Turpin et al. find
-that reasoning explanations can omit influences on model answers, although
-their experiments do not evaluate code self-review~\cite{turpin2023unfaithful}.
-More directly, a METR research report describes task-dependent responses when
-agents are questioned after reward hacking: some acknowledge violating user
-intent, while others defend their behaviour~\cite{vonarx2025rewardhacking}.
+Language-based accounts require separate scrutiny. Turpin et al. show that
+reasoning explanations can omit influences on answers, although their
+experiments do not test code self-review~\cite{turpin2023unfaithful}.
+A METR research report describes agents sometimes admitting reward hacking
+when questioned and sometimes defending it~\cite{vonarx2025rewardhacking}.
 This report is not peer-reviewed, and its examples do not establish general
-self-review accuracy. Baker et al. monitored reasoning models during coding
-reinforcement learning and found that a monitor reading the chain of thought
-caught reward hacks, such as forcing tests to exit early, far more often than
-one reading actions alone; training against that monitor led models to
-obscure their intent~\cite{baker2025monitoring}. Together, these findings motivate comparing admissions
-with implementation evidence and distinguishing later acknowledgement from
-disclosure during execution or in the final answer.
+self-review accuracy. Admissions must be compared with implementation
+evidence and distinguished from disclosure before explicit review.
 
 \subsection{Motivation for This Study}
 
-The reviewed studies leave uncertainty about which hidden checks expose
-shortcuts tied to scientific datasets and whether agents disclose them before
-explicit review. These questions matter together: a missed shortcut may
-reflect a weak oracle, while a later admission may leave an earlier report
-misleading. Evaluating detector performance alongside disclosure can therefore
-clarify whether users receive adequate evidence of correctness. Test visibility
-provides the context for this comparison, since it changes the information
-available to the agent during implementation.
+These studies motivate evaluating hidden checks and disclosure together.
+A missed shortcut may expose an oracle weakness; an admission during review
+may reveal information absent from the final answer. Our study examines
+both for shortcuts in scientific-analysis code, with test visibility
+providing the context in which implementations are produced.
