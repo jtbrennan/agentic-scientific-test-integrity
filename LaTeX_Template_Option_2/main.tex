@@ -79,13 +79,13 @@
 		Visible tests can reward code that returns expected answers without
 		performing the requested analysis. We evaluated 207 agent runs across six
 		scientific tasks using hidden unit tests, metamorphic checks, and self-reviews.
-		Among 62 identified gaming cases, checks anchored to the supplied dataset
-		detected all cases, while the original hidden suite detected 35. Agents
-		acknowledged shortcuts in all 62 direct reviews, but only 29 final answers
-		mentioned them. Within this sample, independent checks and explicit review
-		provided evidence of incorrect analyses that visible test success and
-		final summaries often failed to convey.
-		
+		Dataset-anchored checks detected all 62 identified gaming cases, including
+		61 under deliberately conflicting tests; the original suite detected 35.
+		Direct reviews elicited admissions in all 62 cases, while 29 final answers
+		mentioned shortcuts. These preliminary findings support independent checks
+		and explicit disclosure. Incomplete labels and retrospective evaluation
+		limit generalisation.
+
 		\keywords{Software testing \and AI agents \and Metamorphic testing \and Mutation testing \and Scientific software}
 	\end{abstract}
 	
@@ -97,7 +97,10 @@
 	\input{Conclusion}
 	
 	\bibliographystyle{IEEEtran}
+	\begingroup
+	\interlinepenalty=10000
 	\bibliography{bibliography}
+	\endgroup
 	
 	\clearpage
 	\endgroup
