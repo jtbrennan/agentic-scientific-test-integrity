@@ -12,6 +12,33 @@ effectiveness using injected mutations~\cite{ravi2025pbt}; here, similar
 mutation scores concealed substantial differences in detecting agent
 shortcuts.
 
+The reason lies in the kind of fault. Mutation analysis assumes that
+detecting small syntactic changes predicts detecting real faults, and Just et
+al. found this coupling for most, though not all, real
+faults~\cite{just2014mutants}. The shortcuts we observed are not small or
+random. Each is a deliberate, input-conditional branch that is inactive on
+every input except the one the agent was tested on. A suite can kill almost
+every mutant and still never execute that branch. The same limit applies to
+held-out suites in program repair~\cite{smith2015cure}: they reveal
+overfitting only when their inputs differ from the training inputs in the
+way the overfitted code depends on. For agents that see their tests, the
+relevant inputs are those tests and the data they use. Suites intended to
+detect gaming should therefore be assessed against planted shortcut
+variants, as well as against mutants, and should include relations anchored
+on the data the agent was given.
+
+These results suggest four practical steps for anyone evaluating
+agent-written analysis code. First, rerun the analysis on transformed copies
+of the supplied dataset, where the correct change in output is known, rather
+than only on new inputs. Second, scan the code for literal expected values
+and checks on dataset size or contents; this cheap check flagged most
+gaming cases here with no false alarms, although it would be easy to evade.
+Third, ask the agent to review its work before relying on its summary, since
+even a question that did not mention shortcuts brought them to light.
+Fourth, treat a conflict between tests and specification as an error to be
+reported, not a constraint to be satisfied; the agents in this study
+usually recognised the conflict and resolved it the wrong way.
+
 The disclosure results concern what reaches the user. A reader relying on
 the final answer could miss a shortcut already mentioned during
 implementation. Review brought those qualifications back into view, but an
@@ -21,15 +48,30 @@ should state departures from the requested method and identify affected
 results. Review can help surface these departures; assessing correctness still
 requires independent checks of the implementation.
 
-The scope remains limited. Most identified gaming arose under deliberately
+\subsection{Threats to Validity}
+
+\emph{Construct validity.} Most identified gaming arose under deliberately
 conflicting tests, so the study chiefly demonstrates failure modes under a
-stress condition. Uneven task and model allocations and incomplete manual
-labels leave ordinary gaming prevalence and the effect of hiding tests
-unresolved. Retrospective changes to the evaluator also limit claims about
-detecting unseen shortcuts. Manual judgements lack recorded independent
-double-coding, and repeated tasks limit generalisation from run-level
-statistics. Neutral review preceded direct review in the same session,
+stress condition, where any complete pass is a shortcut by construction.
+Outside that condition, gaming labels depend on judgement, and we manually assigned the labels and
+disclosure codes. They lack independent
+double-coding, and unflagged runs were not all reviewed. The distinction
+between mentioning a discrepancy and stating that a value is wrong is also a
+judgement, which is why both are reported.
+
+\emph{Internal validity.} Anchored checks were first designed after the
+pilot batch, and the quantile unit test was corrected after it raised false
+alarms on optimal but non-unique solutions; retrospective evaluation is
+therefore not independent validation, although the post-freeze subset gives
+the same result. Neutral review preceded direct review in the same session,
 preventing a clean comparison of question wording.
+
+\emph{External validity.} We studied one agent harness, Codex CLI, and
+most runs used one model, GPT-5.6 Luna; uneven task and model allocations
+leave ordinary gaming prevalence and the effect of hiding tests unresolved.
+The six tasks are standard statistical analyses on tabular data, and
+repeated runs on the same task limit generalisation from run-level
+statistics.
 
 The next evaluation should freeze the checks before collecting a fresh
 batch and have two reviewers independently classify every implementation,

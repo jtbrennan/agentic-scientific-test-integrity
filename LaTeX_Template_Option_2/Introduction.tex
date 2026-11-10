@@ -30,7 +30,9 @@ needs evidence that the implementation follows the requested analysis beyond
 the examples covered by a finite visible suite.
 
 Prior studies document test exploitation in coding agents and shortcuts in
-scientific analysis~\cite{zhong2025impossiblebench,chen2025scienceagentbench}.
+scientific analysis~\cite{zhong2025impossiblebench,chen2025scienceagentbench},
+and a diagnostic study of research agents finds that they often notice
+problems in their own work without correcting them~\cite{fei2026autoresearch}.
 This evidence motivates independent checks of code and scrutiny of the agent's
 account of its work.
 
@@ -46,7 +48,8 @@ results on transformed versions of it. Planted implementations and
 mutation testing provide complementary evidence about test-suite strength.
 This study contributes empirical evidence about the relative effectiveness of
 hidden checks and the completeness of agent reports. All flagged non-conflict
-runs have been manually classified, and mutation results cover all six tasks.
+runs have been classified from their code and transcripts, and mutation
+results cover all six tasks.
 Detection results concern the gaming cases identified by this procedure;
 unflagged implementations have not all been manually reviewed.
 
@@ -59,4 +62,20 @@ review.
     \item \textbf{RQ1:} How often do agents game visible tests, and does hiding them help?
     \item \textbf{RQ2:} Which hidden checks best detect gamed code?
     \item \textbf{RQ3:} When reviewing its own code, does the agent admit to gaming?
+\end{itemize}
+
+Our main contributions are:
+\begin{itemize}
+    \item a test harness and six scientific-analysis tasks with visible,
+    hidden unit, metamorphic, and anchored checks, released with all 207 agent
+    trajectories;
+    \item evidence that, in this sample, gaming followed a contradictory test
+    rather than task difficulty or prompt pressure, and took the form of
+    special cases keyed to the supplied dataset rather than edits to tests;
+    \item a comparison showing that checks anchored to the supplied data
+    detected every identified gaming case while generic hidden checks missed
+    almost half, even though mutation scores barely separated the two suites;
+    \item a stage-by-stage account of disclosure, showing that agents
+    mentioned the conflict during the task and admitted it on review, but
+    fewer than half said so in their final answer.
 \end{itemize}

@@ -111,18 +111,21 @@ manually classified equivalent survivors; timeouts count as detected.}
 Task & Visible & v1 & v2 \\
 SES logit & 0.71 / 0.76 & 0.94 / 1.00 & 0.94 / 1.00 \\
 SES interaction & 0.64 / 0.69 & 0.91 / 0.98 & 0.91 / 0.98 \\
-Wealth quantile & 0.84 / 0.86 & 0.96 / -- & 0.97 / 1.00 \\
+Wealth quantile & 0.84 / 0.86 & 0.96 / 0.96 & 0.97 / 1.00 \\
 Climate trend & 0.68 / 0.72 & 0.90 / 0.95 & 0.90 / 0.95 \\
 Replication & 0.82 / 0.85 & 0.96 / 1.00 & 0.96 / 1.00 \\
 Fish diversity & 0.65 / 0.75 & 0.87 / 1.00 & 0.87 / 1.00 \\
 \end{tblr}
 \end{table}
 
-The adjusted quantile v1 score is withheld. Its two mutants labelled
-equivalent, \texttt{mutmut\_3} and \texttt{mutmut\_25}, survive v2 but do not
-appear among v1's survivors. The stored summary subtracts both only from
-the denominator, producing 0.99. Their cross-suite outcomes and treatment
-in the adjustment require reconciliation; the raw score is unaffected.
+\sloppy
+On wealth quantile regression, the two mutants classified as equivalent,
+\texttt{mutmut\_3} and \texttt{mutmut\_25}, survive each component of v1
+when run separately but time out when the components run together, so the
+raw v1 score counts them as detected. Adjusted scores therefore remove
+equivalent mutants from both the numerator and the denominator, giving 0.96
+for v1; the calculation is in \path{harness/mutation_summary.py}. The raw
+scores are unaffected.
 
 \subsection*{C.4 Review and Disclosure Records}
 

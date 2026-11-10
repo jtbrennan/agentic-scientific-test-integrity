@@ -11,6 +11,8 @@
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \usepackage{tabularray}
 \usepackage{multirow}
 \usepackage{setspace}
@@ -26,6 +28,9 @@
 \definecolor{appendixGrid}{HTML}{D8D8D8}
 
 \newcommand{\aicheckbox}{\ensuremath{\square}\,}
+\newcommand{\aichecked}{\ensuremath{\boxtimes}\,}
+% Electronic signature in a script face (Zapf Chancery, part of psnfss)
+\newcommand{\esign}[1]{{\fontfamily{pzc}\fontsize{17}{19}\selectfont #1}}
 
 \begin{document}
 	

@@ -23,16 +23,20 @@
 	Project option
 	&
 	{\aicheckbox Option 1 Applied Research \\
-		\aicheckbox Option 2 Research Oriented}
+		\aichecked Option 2 Research Oriented}
 	\\
 	Group members
 	&
+	{John Brennan (1289971, jbrenn07) \\
+		Akshay Rambarran (1269019, arambarr)}
 	\\
 	Final document
-	& Report or paper filename
+	& \path{brennan_john_rambarran_akshay.pdf}
 	\\
 	AI use status
 	&
+	% TODO (both members): tick the status that applies; see the AI use
+	% summary below for what was used.
 	{\aicheckbox Section 3 limited use \\
 		\aicheckbox Project-specific use approved in the goal document}
 	\\
@@ -61,26 +65,45 @@
 	\\
 	Goal document, draft, and final submission were authored
 	by the group within Section 3 permissions
-	&
+	& To be confirmed by both members (see AI use summary)
 	\\
 	Sources were read, verified, and cited in the required format
-	&
+	& IEEE numbered references (\path{bibliography.bib})
 	\\
 	Code, tests, figures, tables, data, results, and supporting
 	files are genuine
-	&
+	& Public repository: raw agent trajectories (\path{runs/}),
+	results, harness, and tasks
 	\\
 	Contribution statements match the version and repository history
-	&
+	& Appendix B; Git history
 	\\
 	The required academic integrity page is included and signed
-	&
+	& Page 2
 	\\
 	Project-specific AI use is declared; substantive interactions
 	are documented
-	&
+	& AI use summary below
 	\\
 \end{longtblr}
+
+\noindent
+\textbf{AI use summary}
+\par\nopagebreak\smallskip
+
+\begingroup
+\RaggedRight
+\begin{itemize}
+	\item \textbf{Object of study (not an aid).} OpenAI Codex CLI with
+	GPT-5-family models is the agent under evaluation. Its trajectories,
+	analysis code, and review answers are stored unedited in \path{runs/}
+	as experimental data.
+	\item \textbf{John Brennan.} Used Claude Code (Anthropic) to analyze
+	and give high-level feedback on the test projects used in the
+	experiments, to explain those projects, and to identify gaps and
+	problems in their tests.
+\end{itemize}
+\endgroup
 
 \noindent
 \textbf{Group declaration}
@@ -108,12 +131,12 @@ signatures are acceptable.
 	}
 	Member 1 name, signature, and date
 	&
+	{John Brennan \\ \esign{John Brennan} \\ 10 November 2026}
 	\\
 	Member 2 name, signature, and date
 	&
-	\\
-	Member 3 name, signature, and date
-	&
+	% Akshay: to sign, add \esign{Akshay Rambarran} and the date
+	{Akshay Rambarran}
 	\\
 \end{tblr}
 
@@ -124,54 +147,48 @@ signatures are acceptable.
 \label{app:B}
 
 \noindent
-Provide evidence detailing whether the contribution among
-group members was equally divided or not. This should include:
-
-\begin{itemize}
-	\item A complete list of collaborators, accompanied by a
-	brief summary of each member's specific contributions
-	(e.g., one member analyzed the problem, another conducted
-	research on a specific aspect, and all members participated
-	in developing and testing the solution).
-	
-	\item Supporting evidence, such as GitHub or Bitbucket
-	commits, Microsoft Word or Google Docs revision tracking,
-	or similar documentation.
-\end{itemize}
-
-\noindent
-If contributions were not equally distributed, propose a
-weighted evaluation of each member's contributions. All group
-members must agree on this distribution and sign the document.
-For example:
-
-\par\bigskip
+\textbf{Contribution and evidence of work distribution.}
+Work was divided by area. Both members agreed the research questions
+and design, discussed the results, and reviewed each other's work. The
+work is recorded in the commits on \path{main} by \path{jtbrennan} and
+\path{arambarran} in the public repository:
+\par\smallskip
+\noindent\url{https://github.com/jtbrennan/agentic-scientific-test-integrity}
 
 \begingroup
 \RaggedRight
+\begin{itemize}
+	\item \textbf{John Brennan} --- experimental side: the agent harness
+	and sandbox, the six tasks with their visible and hidden test suites
+	(unit, metamorphic, and anchored checks) and planted solutions, the
+	agent runs, evaluation and re-evaluation, gaming labels and
+	disclosure coding, mutation testing, and statistical analysis
+	(\path{harness/}, \path{tasks/}, \path{runs/},
+	\path{results/}).
+	\item \textbf{Akshay Rambarran} --- paper: the LaTeX document and
+	layout, abstract, introduction, background and related work,
+	methodology, findings, discussion, conclusion, the reproducibility
+	appendix (Appendix C), and the bibliography
+	(\path{LaTeX_Template_Option_2/}); also checked the reported
+	results against the stored data, finding an inconsistency in the
+	adjusted mutation scores that was then corrected.
+\end{itemize}
 
 \textbf{Proposed Weighted Contribution:}
 \par\bigskip
 
-\textbf{Member 1:} Tom Smith --- Contributed
-\textbf{40\%} to this project.
+\textbf{Member 1:} John Brennan --- Contributed
+\textbf{50\%} to this project.
 \par\medskip
-\textbf{Signature:} \rule{0.36\linewidth}{0.4pt}
+\textbf{Signature:} \esign{John Brennan}
 \hfill
-\textbf{Date:} \rule{0.18\linewidth}{0.4pt}
+\textbf{Date:} 10 November 2026
 \par\bigskip
 
-\textbf{Member 2:} John Appleseed --- Contributed
-\textbf{40\%} to this project.
+\textbf{Member 2:} Akshay Rambarran --- Contributed
+\textbf{50\%} to this project.
 \par\medskip
-\textbf{Signature:} \rule{0.36\linewidth}{0.4pt}
-\hfill
-\textbf{Date:} \rule{0.18\linewidth}{0.4pt}
-\par\bigskip
-
-\textbf{Member 3:} Suzy Banana --- Contributed
-\textbf{20\%} to this project.
-\par\medskip
+% Akshay: to sign, replace the rules with \esign{Akshay Rambarran} and the date
 \textbf{Signature:} \rule{0.36\linewidth}{0.4pt}
 \hfill
 \textbf{Date:} \rule{0.18\linewidth}{0.4pt}

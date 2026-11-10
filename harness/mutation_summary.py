@@ -5,9 +5,10 @@ Usage: python harness/mutation_summary.py [--out results/mutation/summary.md]
 Reads results/mutation/<task>__<target>.json (harness/mutation.py) and
 results/mutation/equivalent.csv, the hand classification of every mutant
 that survives the full hidden suite v2 (equivalent = 1: no behavioural
-difference under the task specification). A mutant equivalent for v2 is
-equivalent for every suite, so it is dropped from every denominator.
-Timeouts count as killed. Survivors of the weaker suites that v2 kills are
+difference under the task specification). Equivalent mutants are dropped from
+both numerator and denominator of every suite (a weaker suite can still
+"kill" one through a timeout, e.g. quantreg mutmut_3/25 under v1).
+Timeouts count as killed in the raw score, as mutmut reports them. Survivors of the weaker suites that v2 kills are
 by definition not equivalent.
 """
 from __future__ import annotations
@@ -47,7 +48,8 @@ def main() -> None:
                 continue
             surv = {m.split("__")[-1] for m in d[s]["survivors"]}
             killed = total - len(surv)
-            cells.append(f"{killed / total:.2f} / {killed / (total - len(e)):.2f}")
+            killed_ne = killed - len(e - surv)  # equivalents killed only via timeout
+            cells.append(f"{killed / total:.2f} / {killed_ne / (total - len(e)):.2f}")
         out.append(f"| {task} | {total} | {len(e)} | " + " | ".join(cells) + " |")
         if unreviewed:
             out.append(f"\n**{task}: {len(unreviewed)} v2 survivors not classified:** {', '.join(unreviewed)}\n")

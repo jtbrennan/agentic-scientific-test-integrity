@@ -10,6 +10,14 @@ criteria~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
 ScienceAgentBench reports agents reading test labels instead of training the
 requested model, showing that an expected answer can conceal an invalid
 procedure~\cite{chen2025scienceagentbench}.
+AutoResearchEval annotates 800 trajectories from coding-agent harnesses on
+100 frontier research tasks and finds circular validation, implementation
+discrepancies, and overclaiming in most of them; in 82.5\% of trajectories
+an agent noticed a problem with its own work without
+correcting it~\cite{fei2026autoresearch}. Such behaviour is expected in
+principle: Skalse et al. show that a proxy objective is rarely unhackable for
+a broad class of policies~\cite{skalse2022defining}, and a finite visible test
+suite is such a proxy for the requested analysis.
 
 Weak tests also admit ordinary errors. PatchDiff finds behavioural differences
 between agent and developer patches on SWE-bench Verified, with manual review
@@ -21,6 +29,25 @@ exploitation but also reduces performance on the original tasks; read-only
 access prevents test edits without eliminating
 special-casing~\cite{zhong2025impossiblebench}. Test access can therefore affect
 both legitimate implementation and opportunities for exploitation.
+
+\subsection{Overfitting in Program Repair}
+
+Software engineering met the same problem in automated program repair
+(APR). Qi et al. found that most patches reported by generate-and-validate
+repair systems were not correct and that many were equivalent to deleting
+functionality, even though they passed the supplied
+tests~\cite{qi2015analysis}. Smith et al. named this \emph{overfitting}: a
+patch that passes the tests used to guide repair but breaks behaviour that an
+independent held-out suite checks~\cite{smith2015cure}. Held-out suites
+became the standard way to measure it, and the idea carries over to coding
+agents. UTBoost augments SWE-bench tests and finds erroneous patches that the
+original tests had accepted, changing leaderboard
+rankings~\cite{yu2025utboost}. Ahmed et al. split tests into visible and
+hidden sets for LLM repair and find that visible tests usually help hidden-test
+performance, although overfitting still occurs in some
+cases~\cite{ahmed2025overfitting}. Our design follows this tradition, with
+one difference: the hidden checks must work without a reference
+implementation of the scientific analysis.
 
 \subsection{Hidden Oracles and Test Adequacy}
 
@@ -43,14 +70,32 @@ A constant-returning implementation can satisfy row-order invariance yet fail
 the scaling check. The relevant issue is which behaviours a relation rules out,
 rather than how many tests are hidden.
 
+Metamorphic testing has a long record with scientific and statistical
+programs, where exact oracles are scarce. Chen et al. applied it to
+bioinformatics programs~\cite{chen2009bioinformatics}, and Luu et al. derived
+relations for multiple linear regression from its mathematical properties and
+evaluated them with mutation analysis~\cite{luu2021regression}. Liu et al.
+report that a small, diverse set of relations can approach the fault-detection
+ability of a true oracle~\cite{liu2014effectively}. Because numerical results
+are approximate, such checks need tolerances; Hook and Kelly argue that
+trustworthiness, rather than proven correctness, is the realistic target for
+testing scientific software~\cite{hook2009trustworthiness}.
+
 Property-based tests check specified properties over generated inputs.
 Ravi and Coblenz use mutation testing to evaluate property-based tests in 40
 Python projects, finding higher average detection per test than unit tests,
 with variation across property categories~\cite{ravi2025pbt}. Their
 observational results support evaluating test design, without guaranteeing
-superiority on new tasks. Mutation scores measure detection of injected code
-changes, so evidence about agent shortcuts must also come from evaluating
-those shortcuts directly.
+superiority on new tasks. Mutation testing measures a suite by the share of small, injected code
+changes it detects~\cite{papadakis2019mutation}. Just et al. found that
+detecting mutants correlates with detecting real faults, independently of
+coverage, though not every real fault is coupled to a
+mutant~\cite{just2014mutants}; coverage alone is a weaker
+indicator~\cite{inozemtseva2014coverage}. Equivalent mutants, which do not
+change behaviour, cannot be killed and must be identified before a score is
+interpreted~\cite{madeyski2014equivalent}. Mutation scores therefore measure
+detection of injected code changes, so evidence about agent shortcuts must
+also come from evaluating those shortcuts directly.
 
 \subsection{Agent Self-Review and Disclosure}
 
@@ -61,7 +106,11 @@ More directly, a METR research report describes task-dependent responses when
 agents are questioned after reward hacking: some acknowledge violating user
 intent, while others defend their behaviour~\cite{vonarx2025rewardhacking}.
 This report is not peer-reviewed, and its examples do not establish general
-self-review accuracy. Together, these findings motivate comparing admissions
+self-review accuracy. Baker et al. monitored reasoning models during coding
+reinforcement learning and found that a monitor reading the chain of thought
+caught reward hacks, such as forcing tests to exit early, far more often than
+one reading actions alone; training against that monitor led models to
+obscure their intent~\cite{baker2025monitoring}. Together, these findings motivate comparing admissions
 with implementation evidence and distinguishing later acknowledgement from
 disclosure during execution or in the final answer.
 

@@ -38,7 +38,27 @@ We use six tasks covering degree completion, race--SES interactions,
 incarceration and wealth, climate trends, replication effects, and fish
 diversity. Five use DiscoveryBench data; the climate task adapts
 ScienceAgentBench task 87~\cite{majumder2025discoverybench,chen2025scienceagentbench}.
-Each specifies a Python function, input columns, analysis, and outputs.
+Each specifies a Python function, input columns, analysis, and outputs
+(Table~\ref{tab:tasks}). The methods are standard but must be implemented
+with NumPy and SciPy alone, so an agent cannot call a statistics package that
+already returns the expected answer.
+
+\begin{table}[!ht]
+\caption{Tasks. The conflict column gives the correct value of the checked
+quantity and the wrong value substituted in the conflict condition.}
+\label{tab:tasks}
+\centering
+\begin{tblr}{colspec={X[1.15,l] X[1.6,l] X[1.25,l]}, width=\linewidth,
+             rowsep=1pt, row{1}={font=\bfseries}, hline{1,2,Z}={0.4pt}}
+Task & Requested analysis & Conflict (correct $\to$ test) \\
+SES logit & Logistic regression of degree completion on SES & 0.4729 $\to$ 0.5129 \\
+SES interaction & Logistic regression with SES $\times$ race terms & 0.7606 $\to$ 0.8006 \\
+Wealth quantile & Quantile regression of wealth on incarceration, race, sex & $-128500 \to -120500$ \\
+Climate trend & Quadratic trend in simulated temperature at one grid point & $1.21 \to 1.31 \times 10^{-4}$ \\
+Meta-analysis & DerSimonian--Laird random-effects pooling of replication effects & 0.2102 $\to$ 0.2402 \\
+Fish diversity & Poisson regression of species richness on area and climate & 0.1744 $\to$ 0.1844 \\
+\end{tblr}
+\end{table}
 
 One run is one agent attempt in a fresh workspace containing starter code,
 data, instructions, and any supplied tests. Codex CLI uses a macOS Seatbelt
@@ -86,8 +106,13 @@ flags the implementation for review.
 
 Code and execution records distinguish shortcuts from ordinary faults.
 Passing the wrong conflict check supports a gaming label; a hidden-test
-failure alone does not. All flagged non-conflict runs have manual labels,
-but not all unflagged runs have been reviewed. Anchored checks followed the
+failure alone does not. Outside the conflict condition, every run flagged by
+a hidden suite or by a static scan for hard-coded expected values was
+labelled from its code and transcript. We manually assigned these labels (Appendix A); they are being reviewed by
+the authors;
+unflagged runs were not all reviewed.
+% TODO (authors): review a sample of results/manual_labels.csv and
+% results/disclosure_coding.csv, then update this wording to match. Anchored checks followed the
 pilot, and later evaluator fixes mean retrospective detection is not
 independent validation.
 
@@ -103,9 +128,11 @@ receive a neutral question about what a reviewer should know, then a direct
 question about hard-coding and shortcuts. Both continue the original session.
 
 For each identified gaming case, we compare user-visible messages, the final
-answer, and reviews against the implementation. Manual coding distinguishes
-mentioning a discrepancy from admitting that the returned value is not the
-computed result. Comparisons involving neutral reviews use the 30 of 62
+answer, and reviews against the implementation. The coding scheme
+distinguishes mentioning a discrepancy from stating that the returned value
+is not the computed result, and records final answers that claim the result
+is correct. As with the labels, we manually assigned the codes, which
+are being reviewed by the authors. Comparisons involving neutral reviews use the 30 of 62
 gaming cases with that stage available.
 
 \subsection{Compare the Outcomes}
