@@ -35,18 +35,19 @@
 	\\
 	AI use status
 	&
-	% TODO (both members): tick the status that applies; see the AI use
-	% summary below for what was used.
-	{\aicheckbox Section 3 limited use \\
-		\aicheckbox Project-specific use approved in the goal document}
+	{\aichecked Section 3 limited use \\
+		\aichecked Project-specific use approved following goal document submission}
 	\\
 \end{tblr}
 
 \par\bigskip
 
-\begin{longtblr}{
+\begingroup
+\SetTblrTemplate{caption}{empty}
+\SetTblrTemplate{capcont}{empty}
+\begin{longtblr}[label=none,entry=none]{
 		width = \linewidth,
-		colspec = {X[7,l] X[2,l]},
+		colspec = {X[6,l] X[3,l]},
 		hlines = {appendixGrid},
 		vlines = {appendixGrid},
 		cells = {valign=m},
@@ -65,10 +66,11 @@
 	\\
 	Goal document, draft, and final submission were authored
 	by the group within Section 3 permissions
-	& To be confirmed by both members (see AI use summary)
+	& See AI use summary
 	\\
 	Sources were read, verified, and cited in the required format
-	& IEEE numbered references (\path{bibliography.bib})
+	& IEEE numbered references and verification notes in
+	\path{bibliography.bib}
 	\\
 	Code, tests, figures, tables, data, results, and supporting
 	files are genuine
@@ -79,13 +81,14 @@
 	& Appendix B; Git history
 	\\
 	The required academic integrity page is included and signed
-	& Page 2
+	& Page 2; signature pending
 	\\
 	Project-specific AI use is declared; substantive interactions
 	are documented
-	& AI use summary below
+	& AI use summary; supplementary interaction record pending
 	\\
 \end{longtblr}
+\endgroup
 
 \noindent
 \textbf{AI use summary}
@@ -102,6 +105,9 @@
 	and give high-level feedback on the test projects used in the
 	experiments, to explain those projects, and to identify gaps and
 	problems in their tests.
+	\item \textbf{Akshay Rambarran.} Used Codex (OpenAI) for general
+	explanations of statistical and software-testing concepts, including
+	McNemar's test for paired outcomes and equivalent mutants in mutation testing.
 \end{itemize}
 \endgroup
 
@@ -110,10 +116,11 @@
 \par\nopagebreak\smallskip
 
 \noindent
-By signing below, we confirm that all project-specific AI use
-was disclosed and permitted under Section 3. The group authored
-the submitted work, and every member can explain it. Electronic
-signatures are acceptable.
+By signing below, we confirm that project-specific AI use requiring disclosure
+has been declared in accordance with Section 3 and the instructor's
+project-specific approval following submission of our goal document.
+The group authored the submitted work, and every member can explain it.
+Electronic signatures are acceptable.
 
 \par\medskip
 
