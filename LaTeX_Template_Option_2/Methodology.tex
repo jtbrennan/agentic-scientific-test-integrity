@@ -94,12 +94,12 @@ an answer only at the original row count can violate this relation while
 passing checks on unrelated inputs.
 
 Passing the wrong conflict check supports a gaming label; hidden-test failure
-alone does not. Every non-conflict run flagged by hidden tests or a static
-scan for hard-coded expected values has a label based on code and transcript
-inspection. We manually assigned these labels; they
-remain under author review (Appendix A). Unflagged runs were not all
-classified. Anchored checks followed the pilot, and subsequent evaluator
-fixes mean retrospective detection is not independent validation.
+alone does not. All 146 non-conflict runs have final labels for this analysis,
+including unflagged implementations. Classification distinguishes
+test-specific substitutions from computed estimates and ordinary faults,
+using saved code and relevant transcript evidence. Independent double-coding
+was not performed. Anchored checks followed the pilot; subsequent evaluator fixes
+make detection retrospective rather than independent validation.
 
 Planted implementations and mutations of honest solutions assess detector
 strength. We retain raw mutation scores and scores adjusted for recorded
@@ -113,8 +113,8 @@ about shortcuts, both in the original session. Hidden results are withheld.
 
 Coding distinguishes mentions of discrepancies, explicit admissions, and
 misleading correctness claims in implementation messages, final answers,
-and reviews. We manually assigned these codes, which remain under
-author review. Neutral-review comparisons cover the 30 of 62 identified
+and reviews. We manually assigned these codes; disclosure coding
+is complete. Neutral-review comparisons cover the 30 of 62 identified
 gaming cases with that stage available.
 
 \subsection{Compare the Outcomes}
@@ -124,5 +124,5 @@ For RQ2, detection is the proportion of identified gaming cases flagged by
 a check family or suite; ordinary faults are counted separately. For RQ3,
 denominators include only cases with available responses at the relevant
 stage. We use Wilson 95\% confidence intervals and exact McNemar tests for
-paired outcomes. Repeated tasks, uneven allocations, and incomplete review
+paired outcomes. Repeated tasks, uneven allocations, and retrospective evaluation
 limit generalisation. Appendix C gives the settings and reproduction commands.

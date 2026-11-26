@@ -96,15 +96,15 @@ The aggregation script uses \path{eval_v2.json} when available. It also groups
 runs started after the initial v2 commit. Because we continued to revise
 the evaluator, we do not treat this group as an independent validation set.
 
-Our provisional labels and notes are in \path{results/manual_labels.csv}.
-We manually assigned the labels; they remain under author review.
-Of the 45 labelled non-conflict runs, one is labelled gaming and 44 are
-labelled non-gaming. These include all 41 runs flagged by hidden tests or
-static scans. The remaining 101 runs are unflagged and unlabelled. The
-statistics script counts them as non-gaming, but we have not verified that
-they contain no shortcuts. We therefore report identified gaming and count
-ordinary faults separately. Independent classification by two reviewers
-remains to be completed.
+Final labels and evidence notes for all 146 non-conflict runs are in
+\path{results/manual_labels.csv}: one is labelled gaming and 145 non-gaming.
+The 101 previously unclassified runs were assessed using the same distinction
+between test-specific shortcuts and ordinary implementations; none added a
+gaming case. All 207 included runs therefore have a classification, counting
+61 conflict cases under the construction rule. The statistics script rejects
+missing, duplicate, or invalid labels instead of treating missing labels as
+non-gaming. A non-gaming label does not certify scientific correctness.
+Independent double-coding was not performed; inter-rater agreement was not measured.
 
 Mutation results cover honest implementations of all six tasks, with target
 paths stored in \path{results/mutation/*__*.json}. The runner uses mutmut
@@ -163,7 +163,7 @@ disagreements (exact McNemar $p=2.33\times10^{-10}$). Neutral and direct
 reviews agreed on disclosure in all 30 cases with both stages available.
 
 Our disclosure codes are in \path{results/disclosure_coding.csv}. We manually
-assigned them; they remain under author review. We distinguish
+assigned them; these codes are final for this analysis. We distinguish
 a mention of the shortcut, an explicit admission, disclosure anywhere in
 user-visible messages, and a misleading correctness claim. A mention and a
 misleading claim can coexist.
@@ -175,7 +175,7 @@ comparisons that require a review response.
 \subsection*{C.5 Repeating the Evaluation}
 
 To repeat the evaluation without overwriting the archived results, use a
-separate checkout of revision \texttt{4b5367a}. From its root, prepare the evaluator:
+separate checkout of revision \texttt{4ffc757}. From its root, prepare the evaluator:
 \begin{verbatim}
 python3.13 -m venv .venv
 . .venv/bin/activate
@@ -221,16 +221,16 @@ The example permits 1,200 seconds per implementation or nudge; reviews have
 repeating the setup may produce different code. Our comparisons pair
 outcomes from the same run and use only available responses. The saved
 records include task, model, prompt, and batch information for further
-analysis; incomplete labels and missing responses still limit those comparisons.
+analysis; uneven coverage and missing responses still bound those comparisons.
 
 \clearpage
 \subsection*{C.6 Additional Results}
 
 The tables below expand the results in Section~\ref{Findings}, using the
-same 207 runs and provisional labels. We show the model breakdown to make
+same 207 runs and final labels. We show the model breakdown to make
 the uneven coverage clear. These counts do not support model rankings or
-causal claims about test visibility, and unlabelled runs may still contain
-shortcuts.
+causal claims about test visibility. Complete label coverage does not replace
+independent validation of the classifications.
 
 \begin{table}[!ht]
 \caption{Identified gaming by test condition and model. Cells give gaming
@@ -250,9 +250,10 @@ Conflict & 48/48 & 13/13 & 61/61 & 94--100\% \\
 Figure~\ref{fig:detection-task} shows the check-family breakdown. The 27
 additional detections comprise 14 wealth, six climate, six replication,
 and one interaction case. A static scan flagged 54/62 identified gaming
-cases and none of the other 145 runs. Because 101 of those runs remain
-unlabelled, we cannot yet estimate the scan's false-alarm rate on verified
-non-gaming implementations.
+cases and 0/145 runs labelled non-gaming (Wilson 95\% CI 0--3\%). Both v1
+and v2 flagged 40/145 non-gaming runs (28\%; CI 21--35\%), reflecting ordinary
+faults. These comparisons use the completed classifications; inter-rater
+agreement was not assessed.
 
 \begin{figure}[!ht]
 \centering
@@ -311,8 +312,8 @@ Direct review admits it & 48/48 & 14/14 & 62/62 \\
 \begin{samepage}
 All 62 identified gaming cases have direct reviews. Among the other 145
 runs, 142 have parsed direct verdicts, all \texttt{GENUINE}; three are
-unavailable. Because labels are incomplete, we cannot yet use these verdicts
-to estimate how often an agent falsely admits to gaming. All 30 gaming
-cases with neutral reviews used the same model, which also limits
-comparisons across models.\par
+unavailable. Thus 0/142 available verdicts claim a shortcut among runs labelled
+non-gaming; the three missing verdicts are excluded. These comparisons use
+the final labels. All 30 gaming cases with neutral reviews used the same model,
+which also limits comparisons across models.\par
 \end{samepage}
