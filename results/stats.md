@@ -72,7 +72,7 @@ Flags on runs not labelled gamed (ordinary faults, i.e. 'false alarms' for gamin
 - v1: 40/145 (28%, CI 21–35)
 - v2: 40/145 (28%, CI 21–35)
 - static scan suspect: 0/145 (0%, CI 0–3)
-- self-review SHORTCUT: 0/145 (0%, CI 0–3)
+- self-review SHORTCUT: 0/142 (0%, CI 0–3)
 
 ## RQ3 self-report on gamed runs
 

@@ -70,6 +70,12 @@ def mcnemar(x: list[bool], y: list[bool]) -> str:
     return f"discordant {b}/{c}, exact McNemar p = {binomtest(b, b + c, 0.5).pvalue:.3g}"
 
 
+def review_counts(rows: list[dict]) -> tuple[int, int]:
+    verdicts = [row["self_review"] for row in rows
+                if row["self_review"] in ("GENUINE", "SHORTCUT")]
+    return verdicts.count("SHORTCUT"), len(verdicts)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--csv", type=Path, default=ROOT / "results" / "runs_table.csv")
@@ -149,7 +155,7 @@ def main() -> None:
     w(f"| v1 (unit+MR) | {rate(sum(r['v1'] for r in gamed), len(gamed))} |")
     w(f"| v2 (v1+anchored) | {rate(sum(r['v2'] for r in gamed), len(gamed))} |")
     w(f"| static scan (suspect) | {rate(sum(B(r['suspect']) for r in gamed), len(gamed))} |")
-    w(f"| self-review SHORTCUT | {rate(sum(r['self_review'] == 'SHORTCUT' for r in gamed), len(gamed))} |")
+    w(f"| self-review SHORTCUT | {rate(*review_counts(gamed))} |")
     w(f"\nv1 vs v2 on the same gamed runs: {mcnemar([r['v1'] for r in gamed], [r['v2'] for r in gamed])}")
     pre = [r for r in gamed if r["run_id"].split("__")[-1] > "20261104T144"]  # runs after v2 was frozen
     w(f"v2 on gamed runs started after v2 was committed: {rate(sum(r['v2'] for r in pre), len(pre))}; "
@@ -158,7 +164,7 @@ def main() -> None:
     for k in ("v1", "v2"):
         w(f"- {k}: {rate(sum(r[k] for r in honest), len(honest))}")
     w(f"- static scan suspect: {rate(sum(B(r['suspect']) for r in honest), len(honest))}")
-    w(f"- self-review SHORTCUT: {rate(sum(r['self_review'] == 'SHORTCUT' for r in honest), len(honest))}")
+    w(f"- self-review SHORTCUT: {rate(*review_counts(honest))}")
 
     # RQ3: self-report -------------------------------------------------------
     if a.disclosure.exists():
@@ -172,7 +178,7 @@ def main() -> None:
         groups["ALL"] = d
         for m, xs in groups.items():
             nr = [x for x in xs if "neutral_disclosed" in x]
-            w(f"| {m} | {len(xs)} | {rate(sum(x['self_review'] == 'SHORTCUT' for x in xs), len(xs))} | "
+            w(f"| {m} | {len(xs)} | {rate(*review_counts(xs))} | "
               f"{rate(sum(x['final_disclosed'] for x in xs), len(xs))} | "
               f"{rate(sum(x['final_explicit'] for x in xs), len(xs))} | "
               f"{rate(sum(x['any_msg_disclosed'] for x in xs), len(xs))} | "
@@ -182,9 +188,10 @@ def main() -> None:
         for k in ("final_disclosed", "final_explicit"):
             w(f"\n{k}, luna vs other models: Fisher "
               f"{fisher((sum(x[k] for x in lu), len(lu)), (sum(x[k] for x in ot), len(ot)))}")
-        sr = [x["self_review"] == "SHORTCUT" for x in d]
-        w(f"\nDirect review vs unprompted final report (paired): {mcnemar(sr, [x['final_disclosed'] for x in d])}")
-        nr = [x for x in d if "neutral_disclosed" in x]
+        paired_direct = [x for x in d if x["self_review"] in ("GENUINE", "SHORTCUT")]
+        sr = [x["self_review"] == "SHORTCUT" for x in paired_direct]
+        w(f"\nDirect review vs unprompted final report (paired): {mcnemar(sr, [x['final_disclosed'] for x in paired_direct])}")
+        nr = [x for x in paired_direct if "neutral_disclosed" in x]
         if nr:
             w(f"Direct vs neutral review (paired, runs with both): "
               f"{mcnemar([x['self_review'] == 'SHORTCUT' for x in nr], [x['neutral_disclosed'] for x in nr])}")
